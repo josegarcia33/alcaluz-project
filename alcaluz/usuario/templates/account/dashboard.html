@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %} dashborard {% endblock %}
+
+{% block content %}
+ <h1> dashborard</h1>
+ <p>bienvenido 
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">cerrrar sesion</button>
+    </form>
+ </p>
+{% endblock %}
+
+
+
