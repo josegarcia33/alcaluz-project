@@ -1,50 +1,43 @@
 {% extends 'base.html' %}
 
-{% block title %}Iniciar Sesión - Alcaluz{% endblock %}
+{% block title %}Crear Cuenta - Alcaluz{% endblock %}
 
 {% block content %}
 <style>
-    /*color celeste psegún  lo que pide figma*/
     body {
-        background-color: #1B68A7 !important; 
+        background-color: #1B68A7 !important;
         height: 100vh;
         display: flex;
         flex-direction: column;
     }
-    
     nav {
         display: none !important;
     }
-
-    .login-container {
+    .register-container {
         min-height: 85vh;
         display: flex;
         align-items: center;
         justify-content: center;
     }
-
-    .login-card {
+    .register-card {
         background-color: #63B0EF;
-        border-radius: 40px; 
+        border-radius: 40px;
         padding: 3rem 2.5rem;
         width: 100%;
         max-width: 450px;
         border: none;
     }
-
-    .login-title {
+    .register-title {
         color: #ffffff;
         font-weight: 700;
         font-size: 2.2rem;
         margin-bottom: 2rem;
     }
-
     .form-label-custom {
         color: #ffffff;
         font-size: 0.95rem;
         margin-bottom: 0.4rem;
     }
-
     .form-control-custom {
         background-color: #1B68A7 !important;
         border: none;
@@ -52,52 +45,45 @@
         color: #ffffff !important;
         padding: 0.75rem 1rem;
     }
-
     .form-control-custom::placeholder {
         color: #a0cfff;
     }
-
-    .form-control-custom:focus {
-        box-shadow: 0 0 0 3px rgba(13, 6, 71, 0.25);
-        background-color: #155284 !important;
-    }
-
     .btn-custom {
-        background-color: #0D0647 !important; 
+        background-color: #0D0647 !important;
         color: #ffffff !important;
         border: none;
         border-radius: 12px;
         padding: 0.8rem;
         font-weight: 700;
         letter-spacing: 1px;
-        transition: all 0.2s ease;
     }
-
     .btn-custom:hover {
         background-color: #050224 !important;
-        transform: translateY(-1px);
     }
-
-    .register-link {
+    .login-link {
         color: #ffffff;
         text-decoration: none;
         font-size: 0.9rem;
-        transition: opacity 0.2s;
     }
-
-    .register-link:hover {
+    .login-link:hover {
         text-decoration: underline;
-        opacity: 0.9;
     }
 </style>
 
-<div class="login-container">
-    <div class="card login-card shadow-lg text-center">
-        <h2 class="login-title">Iniciar Sesión</h2>
+<div class="register-container">
+    <div class="card register-card shadow-lg text-center">
+        <h2 class="register-title">Crear Cuenta</h2>
         
         {% if form.errors %}
-            <div class="alert alert-danger py-2 small border-0 text-white bg-danger bg-opacity-75 rounded-3 mb-4" role="alert">
-                Usuario o contraseña incorrectos.
+            <div class="alert alert-danger py-2 small border-0 text-white bg-danger bg-opacity-75 rounded-3 mb-3 text-start" role="alert">
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        • {{ error }}<br>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    • {{ error }}<br>
+                {% endfor %}
             </div>
         {% endif %}
 
@@ -109,17 +95,22 @@
                 <input type="text" name="username" id="id_username" class="form-control form-control-custom" placeholder="usuario" required>
             </div>
             
+            <div class="mb-3">
+                <label for="id_password1" class="form-label form-label-custom">Contraseña:</label>
+                <input type="password" name="password1" id="id_password1" class="form-control form-control-custom" placeholder="contraseña" required>
+            </div>
+
             <div class="mb-4">
-                <label for="id_password" class="form-label form-label-custom">Contraseña:</label>
-                <input type="password" name="password" id="id_password" class="form-control form-control-custom" placeholder="contraseña" required>
+                <label for="id_password2" class="form-label form-label-custom">Confirmar contraseña:</label>
+                <input type="password" name="password2" id="id_password2" class="form-control form-control-custom" placeholder="repetir contraseña" required>
             </div>
             
-            <div class="d-grid gap-2 mb-4">
-                <button type="submit" class="btn btn-custom text-uppercase">Acceder</button>
+            <div class="d-grid gap-2 mb-3">
+                <button type="submit" class="btn btn-custom text-uppercase">Crear</button>
             </div>
 
             <div class="text-center">
-                <a href="{% url 'usuario:registro' %}" class="register-link">Clic para crear una cuenta</a>
+                <a href="{% url 'usuario:login' %}" class="login-link">¿Ya tiene una cuenta? Iniciar sesión</a>
             </div>
         </form>
     </div>

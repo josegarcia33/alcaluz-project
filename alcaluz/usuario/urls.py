@@ -2,9 +2,18 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views
 
-urlpatterns=[
-    #path('login',views.user_login, name='login'),
-    path('login/', auth_views.LoginView.as_view(), name ='login'),
-    path('logout/',auth_views.LogoutView.as_view(), name ='logout'),
-    path('',views.dashboard,name='dashboard'),
+app_name = 'usuario'
+
+urlpatterns = [
+    # Login / Logout s
+    #path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('registro/',views.registro_usuario, name='registro' ),
+
+    # otras rutas
+    path('redirect/', views.redirect_by_role, name='redirect_by_role'),
+    path('dashboard/', views.dashboard_general, name='dashboard'),
+    path('dashboard/admin/', views.admin_dashboard, name='admin_dashboard'),
+    path('dashboard/tecnico/', views.tecnico_dashboard, name='tecnico_dashboard'),
 ]
