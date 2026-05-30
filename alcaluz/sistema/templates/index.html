@@ -3,10 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Registrar Luminaria</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
 </head>
 <body>
-    <h1>hola, ejemplo 2</h1>
+    <!--════════════════════════ FORM: REG-LUMINARIA (multi-step) ══════════════════════ -->
+  <div class="page" id="page-reg-lum">
+    <div class="section-hdr">
+      <h2>💡 Registrar luminaria</h2>
+      <button class="btn btn-ghost" onclick="showPage('luminarias',null)">← Volver</button>
+    </div>
+    <div class="card" style="max-width:760px;">
+      <div style="padding:20px 20px 0;">
+        <div class="steps">
+          <div class="step active" id="st1"><div class="step-num">1</div>Identificación</div>
+          <div class="step" id="st2"><div class="step-num">2</div>Ubicación</div>
+          <div class="step" id="st3"><div class="step-num">3</div>Especificaciones</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <!--Step 1 -->
+        <div id="lum-step1">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Código de luminaria *</label>
+              <input class="form-control" placeholder="LUMXXXX">
+              <span class="form-hint">Se asignará automáticamente si se deja vacío</span>
+            </div>
+            <div class="form-group">
+              <label>Tipo de luminaria *</label>
+              <select class="form-control"><option>Seleccionar…</option><option>LED</option><option>Sodio</option><option>Mercurio</option><option>Haluro</option></select>
+            </div>
+            <div class="form-group">
+              <label>Potencia (W) *</label>
+              <input class="form-control" type="number" placeholder="150">
+            </div>
+            <div class="form-group">
+              <label>Fecha de instalación *</label>
+              <input class="form-control" type="date">
+            </div>
+          </div>
+          <div class="action-row">
+            <button class="btn btn-primary" onclick="lumStep(2)">Siguiente →</button>
+          </div>
+        </div>
+        <!-- Step 2 -->
+        <div id="lum-step2" style="display:none;">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Zona *</label>
+              <select class="form-control"><option>Seleccionar…</option><option>Zona Norte</option><option>Zona Centro</option><option>Zona Sur</option><option>Zona Este</option></select>
+            </div>
+            <div class="form-group">
+              <label>Red de control *</label>
+              <select class="form-control"><option>Seleccionar…</option><option>RED-01</option><option>RED-02</option><option>RED-07</option></select>
+            </div>
+            <div class="form-group">
+              <label>Latitud</label>
+              <input class="form-control" placeholder="13.7942">
+            </div>
+            <div class="form-group">
+              <label>Longitud</label>
+              <input class="form-control" placeholder="-88.8965">
+            </div>
+            <div class="form-group full">
+              <label>Dirección / referencia</label>
+              <input class="form-control" placeholder="Av. Principal, frente a parque central">
+            </div>
+          </div>
+          <div class="action-row">
+            <button class="btn btn-ghost" onclick="lumStep(1)">← Anterior</button>
+            <button class="btn btn-primary" onclick="lumStep(3)">Siguiente →</button>
+          </div>
+        </div>
+        <!-- Step 3 -->
+        <div id="lum-step3" style="display:none;">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Marca / Modelo</label>
+              <input class="form-control" placeholder="Philips StreetHawk">
+            </div>
+            <div class="form-group">
+              <label>Estado inicial</label>
+              <select class="form-control"><option>Operativa</option><option>En instalación</option><option>Falla</option></select>
+            </div>
+            <div class="form-group full">
+              <label>Observaciones técnicas</label>
+              <textarea class="form-control" placeholder="Notas sobre la instalación, condiciones del poste, etc."></textarea>
+            </div>
+          </div>
+          <div class="action-row">
+            <button class="btn btn-ghost" onclick="lumStep(2)">← Anterior</button>
+            <button class="btn btn-primary">💾 Guardar luminaria</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--════════════════════════ FIN FORM: REG-LUMINARIA (multi-step) ══════════════════════ -->
     
 </body>
 </html>
