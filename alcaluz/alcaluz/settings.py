@@ -29,14 +29,17 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-
+#por cada aplicacion que se vaya creando se debe modificar esta sección
 INSTALLED_APPS = [
+    #el de usuario es el usado para inicio de sesion
+    'usuario.apps.UsuarioConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'sistema',
 ]
 
 MIDDLEWARE = [
@@ -47,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'usuario.middleware.NoCacheMiddleware',
 ]
 
 ROOT_URLCONF = 'alcaluz.urls'
@@ -72,14 +76,17 @@ WSGI_APPLICATION = 'alcaluz.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+#cambiara la configa según se considere necesario para configuraciones propias de la db local
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'alcaluzdb',
+        'USER': 'postgres',
+        'PASSWORD': 'root',
+        'HOST': 'localhost', 
+        'PORT': '5432',
     }
 }
-
-
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
@@ -121,13 +128,11 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
 
-    'sistema',
-]
+#esto es para redireccionar al user cuando tenga la sesio iniciada
+LOGIN_REDIRECT_URL= 'usuario:redirect_by_role'
+LOGIN_URL= 'login'
+#LOGIN_REDIRECT_URL= 'dashboard'
+#LOGIN_URL= 'login'
+LOGOUT_REDIRECT_URL='usuario:login'
+

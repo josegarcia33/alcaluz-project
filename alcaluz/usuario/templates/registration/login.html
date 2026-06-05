@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}Iniciar Sesión - Alcaluz{% endblock %}
+
+{% block content %}
+<style>
+    /*color celeste psegún  lo que pide figma*/
+    body {
+        background-color: #1B68A7 !important; 
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    nav {
+        display: none !important;
+    }
+
+    .login-container {
+        min-height: 85vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .login-card {
+        background-color: #63B0EF;
+        border-radius: 40px; 
+        padding: 3rem 2.5rem;
+        width: 100%;
+        max-width: 450px;
+        border: none;
+    }
+
+    .login-title {
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+    }
+
+    .form-label-custom {
+        color: #ffffff;
+        font-size: 0.95rem;
+        margin-bottom: 0.4rem;
+    }
+
+    .form-control-custom {
+        background-color: #1B68A7 !important;
+        border: none;
+        border-radius: 10px;
+        color: #ffffff !important;
+        padding: 0.75rem 1rem;
+    }
+
+    .form-control-custom::placeholder {
+        color: #a0cfff;
+    }
+
+    .form-control-custom:focus {
+        box-shadow: 0 0 0 3px rgba(13, 6, 71, 0.25);
+        background-color: #155284 !important;
+    }
+
+    .btn-custom {
+        background-color: #0D0647 !important; 
+        color: #ffffff !important;
+        border: none;
+        border-radius: 12px;
+        padding: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        transition: all 0.2s ease;
+    }
+
+    .btn-custom:hover {
+        background-color: #050224 !important;
+        transform: translateY(-1px);
+    }
+
+    .register-link {
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: opacity 0.2s;
+    }
+
+    .register-link:hover {
+        text-decoration: underline;
+        opacity: 0.9;
+    }
+</style>
+
+<div class="login-container">
+    <div class="card login-card shadow-lg text-center">
+        <h2 class="login-title">Iniciar Sesión</h2>
+        
+        {% if form.errors %}
+            <div class="alert alert-danger py-2 small border-0 text-white bg-danger bg-opacity-75 rounded-3 mb-4" role="alert">
+                Usuario o contraseña incorrectos.
+            </div>
+        {% endif %}
+
+        <form method="post" class="text-start">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                <label for="id_username" class="form-label form-label-custom">Nombre de usuario:</label>
+                <input type="text" name="username" id="id_username" class="form-control form-control-custom" placeholder="usuario" required>
+            </div>
+            
+            <div class="mb-4">
+                <label for="id_password" class="form-label form-label-custom">Contraseña:</label>
+                <input type="password" name="password" id="id_password" class="form-control form-control-custom" placeholder="contraseña" required>
+            </div>
+            
+            <div class="d-grid gap-2 mb-4">
+                <button type="submit" class="btn btn-custom text-uppercase">Acceder</button>
+            </div>
+
+            <div class="text-center">
+                <a href="{% url 'usuario:registro' %}" class="register-link">Clic para crear una cuenta</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

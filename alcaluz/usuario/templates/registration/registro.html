@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %}Crear Cuenta - Alcaluz{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #1B68A7 !important;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+    nav {
+        display: none !important;
+    }
+    .register-container {
+        min-height: 85vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .register-card {
+        background-color: #63B0EF;
+        border-radius: 40px;
+        padding: 3rem 2.5rem;
+        width: 100%;
+        max-width: 450px;
+        border: none;
+    }
+    .register-title {
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+    }
+    .form-label-custom {
+        color: #ffffff;
+        font-size: 0.95rem;
+        margin-bottom: 0.4rem;
+    }
+    .form-control-custom {
+        background-color: #1B68A7 !important;
+        border: none;
+        border-radius: 10px;
+        color: #ffffff !important;
+        padding: 0.75rem 1rem;
+    }
+    .form-control-custom::placeholder {
+        color: #a0cfff;
+    }
+    .btn-custom {
+        background-color: #0D0647 !important;
+        color: #ffffff !important;
+        border: none;
+        border-radius: 12px;
+        padding: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+    .btn-custom:hover {
+        background-color: #050224 !important;
+    }
+    .login-link {
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+    .login-link:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="register-container">
+    <div class="card register-card shadow-lg text-center">
+        <h2 class="register-title">Crear Cuenta</h2>
+        
+        {% if form.errors %}
+            <div class="alert alert-danger py-2 small border-0 text-white bg-danger bg-opacity-75 rounded-3 mb-3 text-start" role="alert">
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        • {{ error }}<br>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    • {{ error }}<br>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="post" class="text-start">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                <label for="id_username" class="form-label form-label-custom">Nombre de usuario:</label>
+                <input type="text" name="username" id="id_username" class="form-control form-control-custom" placeholder="usuario" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="id_password1" class="form-label form-label-custom">Contraseña:</label>
+                <input type="password" name="password1" id="id_password1" class="form-control form-control-custom" placeholder="contraseña" required>
+            </div>
+
+            <div class="mb-4">
+                <label for="id_password2" class="form-label form-label-custom">Confirmar contraseña:</label>
+                <input type="password" name="password2" id="id_password2" class="form-control form-control-custom" placeholder="repetir contraseña" required>
+            </div>
+            
+            <div class="d-grid gap-2 mb-3">
+                <button type="submit" class="btn btn-custom text-uppercase">Crear</button>
+            </div>
+
+            <div class="text-center">
+                <a href="{% url 'usuario:login' %}" class="login-link">¿Ya tiene una cuenta? Iniciar sesión</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
