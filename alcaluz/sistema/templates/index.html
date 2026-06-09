@@ -11,11 +11,70 @@
     <link rel="stylesheet" href="../static/css/styles.css" />
     <script src="../static/jscript/scripts.js" defer></script>
   </head>
+  
   <body>
+    <!--════════════════════════════ INICIO SIDEBAR ════════════════════════════ -->
+    <nav class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">💡</div>
+        <div class="brand-text">ALCALUZ<span>Alumbrado Público</span></div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Principal</div>
+        <div class="nav-item active" onclick="showPage('dashboard', this)">
+          <span class="ico">🏠</span> Dashboard
+        </div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Infraestructura</div>
+        <div class="nav-item" onclick="showPage('zonas', this)">
+          <span class="ico">📍</span> Zonas
+        </div>
+        <div class="nav-item" onclick="showPage('redes', this)">
+          <span class="ico">🔗</span> Redes
+        </div>
+        <div class="nav-item" onclick="showPage('luminarias', this)">
+          <span class="ico">💡</span> Luminarias
+          <span class="badge">3</span>
+        </div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Operaciones</div>
+        <div class="nav-item" onclick="showPage('consumo', this)">
+          <span class="ico">⚡</span> Consumo
+        </div>
+        <div class="nav-item" onclick="showPage('reportes', this)">
+          <span class="ico">📈</span> Reportes
+        </div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Administración</div>
+        <div class="nav-item" onclick="showPage('usuarios', this)">
+          <span class="ico">👥</span> Usuarios
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="avatar" title="logo user">A</div>
+          <div class="user-info">
+            <div class="user-name">Admin General</div>
+            <div class="user-role">Administrador</div>
+          </div>
+          <button class="logout-btn" onclick="doLogout()" title="Cerrar sesión">⏻</button>
+        </div>
+      </div>
+    </nav>
+    <!--════════════════════════════ FIN SIDEBAR ════════════════════════════ -->
+  
     <!--════════════════════════════ INICIO LUMINARIAS ════════════════════════════ -->
     <div class="page active" id="page-luminarias"><!--page active porque es la primera página que se muestra -->
       <div class="section-hdr">
-        <h2 style="font-size: 20px">💡 Luminarias</h2>
+        <h2 style="font-size: 20px">💡 Luminarias registradas</h2>
         <button class="btn btn-primary" onclick="showPage('reg-lum', null)">
           ＋ Registrar luminaria
         </button>
@@ -23,6 +82,9 @@
       <div class="filter-bar">
         <select class="form-control">
           <option>Todas las zonas</option>
+          <option>zona norte</option>
+          <option>zona centro</option>
+          <option>zona este</option>
         </select>
       </div>
 
@@ -67,7 +129,7 @@
     </div>
     <!--════════════════════════════ FIN LUMINARIAS ════════════════════════════ -->
 
-    <!--════════════════════════════ INICIO Formulario de registro de luminaria) ══════════════════════ -->
+    <!--════════════════════════════ INICIO REGISTRO DE LUMINARIA ══════════════════════ -->
     <div class="page" id="page-reg-lum">
         <div class="section-hdr">
           <h2>💡 Registrar luminaria</h2>
@@ -113,6 +175,144 @@
             </div><!--FIN FORMULARIO -->
         </div>     
     </div>
-    <!--════════════════════════ FIN Formulario de registro de luminaria ══════════════════════ -->
-  </body>
+    <!--════════════════════════ FIN REGISTRO DE LUMINARIA ══════════════════════ -->
+    
+
+
+
+
+
+
+
+        <!--════════════════════════════ INICIO CONSUMOS ════════════════════════════ -->
+    <div class="page" id="page-consumo">
+      <div class="section-hdr">
+        <h2 style="font-size: 20px">⚡ Consumos registrados</h2>
+        <button class="btn btn-primary" onclick="showPage('reg-consumo', null)">
+          ＋ Registrar consumo
+        </button>
+      </div>
+      <!--<div class="filter-bar">
+        <select class="form-control">
+          <option>Todas las zonas</option>
+        </select> 
+      </div>-->
+
+      <div class="TablaPrincipal">
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>id</th>
+                <th>consumo_kwh</th>
+                <th>costo</th>
+                <th>periodo_inicio</th>
+                <th>periodo_fin</th>
+                <th>fecha_registro</th>
+                <th>id_lum</th>
+                <th>id_tecnico</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1</strong></td>
+                <td>150W</td>
+                <td>300</td>
+                <td>12/01/2023</td>
+                <td>12/01/2023</td>
+                <td>12/01/2023</td>
+                <td>1</td>
+                <td>11</td>
+              </tr>
+              <tr>
+                <td><strong>2</strong></td>
+                <td>250W</td>
+                <td>500</td>
+                <td>12/01/2023</td>
+                <td>05/03/2022</td>
+                <td>12/01/2023</td>
+                <td>2</td>
+                <td>12</td>
+              </tr>
+              <tr>
+                <td><strong>3</strong></td>
+                <td>200W</td>
+                <td>400</td>
+                <td>12/01/2023</td>
+                <td>18/07/2024</td>
+                <td>12/01/2023</td>
+                <td>3</td>
+                <td>13</td>
+              </tr>
+              
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!--════════════════════════════ FIN CONSUMOS ════════════════════════════ -->
+
+    <!--════════════════════════════ INICIO REGISTRO DE CONSUMO ════════════════════════════ -->
+    <div class="page" id="page-reg-consumo">
+        <div class="section-hdr">
+          <h2>⚡ Registrar consumo</h2>
+          <button class="btn btn-ghost" onclick="showPage('consumo', null)">
+            ← Volver
+          </button>
+        </div>
+
+        <div class="TablaForm">           
+                <div class="stepe">
+                    <h1>Formulario de registro de consumo</h1>
+                </div>
+        
+    
+            <!--FORMULARIO -->
+            <div class="form-grid">
+
+                <div class="form-group">
+                  <label>Luminaria *</label>
+                  <select class="form-control"><option>Seleccionar…</option><option>lum-01</option><option>lum-02</option><option>lum-03</option></select>
+                </div>
+
+                <div class="form-group">
+                  <label>consumo (kWh) *</label>
+                  <input class="form-control" type="number" placeholder="150">
+                </div>
+
+                <div class="form-group">
+                  <label>Periodo inicio *</label>
+                  <input class="form-control" type="date">
+                </div>
+
+                <div class="form-group">
+                  <label>Periodo fin *</label>
+                  <input class="form-control" type="date">
+                </div>
+
+                <div class="form-group">
+                  <label>costo *</label>
+                  <input class="form-control" type="number" placeholder="150">
+                </div>
+
+                <div class="form-group">
+                  <label>Fecha de registro *</label>
+                  <input class="form-control" type="date">
+                </div>    
+
+                <div class="form-group">
+                  <label>Tecnico *</label>
+                  <select class="form-control"><option>Seleccione su id tecnico…</option><option>11</option><option>12</option><option>13</option></select>
+                </div>
+                
+                <div class="action-row">
+                  <button class="btn btn-primary">💾 Guardar Consumo</button>
+                </div>
+            </div><!--FIN FORMULARIO -->
+        </div>     
+    </div>
+    <!--════════════════════════════ FIN REGISTRO DE CONSUMO ════════════════════════════ -->
+
+
+</body>
 </html>
