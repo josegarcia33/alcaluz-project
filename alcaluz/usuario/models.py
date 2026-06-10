@@ -4,55 +4,94 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-class Administrador(User):
-    codigo_empleado = models.CharField(max_length=20, unique=True, verbose_name="Código empleado")
-    
-    class Meta:
-        verbose_name = "Administrador"
-        verbose_name_plural = "Administradores"
-        #en la db tiene que aparecer en plural la tabla adminstradores
-        db_table='Administradores'
-
-    def __str__(self):
-        return f"Admin: {self.username}"
 
 
-class Tecnico(User):
-    telefono = models.CharField(max_length=15, blank=True, null=True, verbose_name="Teléfono de Contacto")
+class Departamento(models.Model):
+    # pk
+    DepartamentoID = models.AutoField(primary_key=True, verbose_name="ID Departamento")
+    nombre = models.CharField(max_length=100, unique=True, verbose_name="Nombre del Departamento")
 
     class Meta:
-        verbose_name = "Técnico Municipal"
-        verbose_name_plural = "Técnicos Municipales"
-        db_table='Tecnicos'
-
-    def __str__(self):
-        return f"Técnico: {self.username}"
-
-
-class Zona(models.Model):
-    nombre = models.CharField(max_length=100, unique=True, verbose_name="Nombre de la Zona")
-    
-
-    class Meta:
-        verbose_name = "Zona"
-        verbose_name_plural = "Zonas"
-        db_table='ZonasMunicipales'
+        verbose_name = "Departamento"
+        verbose_name_plural = "Departamentos"
+        db_table = 'Departamentos'
 
     def __str__(self):
         return self.nombre
 
 
+class Municipio(models.Model):
+    MunicipioID = models.AutoField(primary_key=True, verbose_name="ID Municipio")
+    nombre = models.CharField(max_length=100, verbose_name="Nombre del Municipio")
+    departamento = models.ForeignKey(
+        Departamento, 
+        on_delete=models.PROTECT, 
+        related_name="municipios", 
+        verbose_name="Departamento al que pertenece",
+        db_column='DepartamentoID' 
+    )
+
+    class Meta:
+        verbose_name = "Municipio"
+        verbose_name_plural = "Municipios"
+        db_table = 'Municipios'
+        unique_together = ('nombre', 'departamento')
+
+    def __str__(self):
+        return f"{self.nombre} ({self.departamento.nombre})"
+
+
+class Zona(models.Model):
+    ZonaID = models.AutoField(primary_key=True, verbose_name="ID Zona")
+    nombre = models.CharField(max_length=100, verbose_name="Nombre del Zona/Sector")
+    
+    # Relación 
+    municipio = models.ForeignKey(
+        Municipio, 
+        on_delete=models.PROTECT, 
+        related_name="zonas", 
+        verbose_name="Municipio Asignado",
+        db_column='MunicipioID'
+    )
+    descripcion = models.TextField(blank=True, null=True, verbose_name="Descripción o Referencia")
+    fecha_registro = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Zona"
+        verbose_name_plural = "Zonas"
+        db_table = 'Zonas'
+        unique_together = ('nombre', 'municipio')
+
+    def __str__(self):
+        return f"{self.nombre} - {self.municipio.nombre}"
+
+
 class Red(models.Model):
-    nombre = models.CharField(max_length=100, unique=True, verbose_name="Nombre de la red")
-    zona = models.ForeignKey(Zona, on_delete=models.PROTECT, related_name="redes", verbose_name="Zona Asignada")
+    RedID = models.AutoField(primary_key=True, verbose_name="ID Red")
+    nombre = models.CharField(max_length=100, unique=True, verbose_name="Nombre de la Red")
+
+    zona = models.ForeignKey(
+        Zona, 
+        on_delete=models.PROTECT, 
+        related_name="redes", 
+        verbose_name="Zona Territorial",
+        db_column='ZonaID'
+    )
+    capacidad_maxima = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        help_text="Capacidad en kW", 
+        verbose_name="Capacidad Máxima"
+    )
+    fecha_registro = models.DateTimeField(auto_now_add=True)
+
     class Meta:
         verbose_name = "Red Eléctrica"
         verbose_name_plural = "Redes Eléctricas"
-        db_table='RedesLuminarias'
+        db_table = 'Redes'
 
     def __str__(self):
-        return f"{self.nombre} - ({self.zona.nombre})"
-
+        return f"{self.nombre} (Zona: {self.zona.nombre})"
 
 class Luminaria(models.Model):
     codigo_unico = models.CharField(max_length=50, unique=True, verbose_name="Código luminaria")
@@ -70,7 +109,7 @@ class Luminaria(models.Model):
 
 class RegistroConsumo(models.Model):
     luminaria = models.ForeignKey(Luminaria, on_delete=models.CASCADE, related_name="consumos", verbose_name="Luminaria")
-    registrado_por = models.ForeignKey(Tecnico, on_delete=models.SET_NULL, null=True, verbose_name="Técnico Responsable")
+    registrado_por = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name="Técnico Responsable")
     fecha_registro = models.DateTimeField(auto_now_add=True)
 
     class Meta:

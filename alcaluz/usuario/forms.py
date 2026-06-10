@@ -1,4 +1,5 @@
 from django import forms
+from usuario.models import Red, Zona
 
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import UserCreationForm
@@ -24,3 +25,42 @@ class RegistroUsuarioForm(UserCreationForm):
             grupo_tecnico, _ = Group.objects.get_or_create(name='Técnico')
             user.groups.add(grupo_tecnico)
         return user
+    
+class ZonaForm(forms.ModelForm):
+    class Meta:
+        model = Zona
+        fields = ['nombre', 'municipio', 'descripcion']
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej. Colonia Escalón o Parque Central'}),
+            'municipio': forms.Select(attrs={'class': 'form-select'}),
+            'descripcion': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Referencias de la zona...'}),
+        }
+
+    # Validación para evitar duplicar una Zona en el mismo Municipio
+    def clean(self):
+        cleaned_data = super().clean()
+        nombre = cleaned_data.get('nombre')
+        municipio = cleaned_data.get('municipio')
+
+        if nombre and municipio:
+            if Zona.objects.filter(nombre__iexact=nombre, municipio=municipio).exists():
+                raise forms.ValidationError(f"La zona '{nombre}' ya está registrada en este municipio.")
+        return cleaned_data
+
+
+class RedForm(forms.ModelForm):
+    class Meta:
+        model = Red
+        fields = ['nombre', 'zona', 'capacidad_maxima']
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej. Red de Distribución Norte-1'}),
+            'zona': forms.Select(attrs={'class': 'form-select'}),
+            'capacidad_maxima': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Capacidad en kW'}),
+        }
+
+    # Validación para evitar nombres de Red repetidos en todo el sistema
+    def clean_nombre(self):
+        nombre = self.cleaned_data.get('nombre')
+        if Red.objects.filter(nombre__iexact=nombre).exists():
+            raise forms.ValidationError("Ya existe una red eléctrica registrada con este nombre.")
+        return nombre

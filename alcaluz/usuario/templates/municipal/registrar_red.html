@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Estructura Municipal - Redes{% endblock %}
+
+{% block content %}
+<div class="row mt-4 text-dark">
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 bg-white rounded-3 p-4">
+            <h4 class="fw-bold text-dark mb-3">⚡ Registrar Red Eléctrica</h4>
+            <hr>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-secondary small">Nombre de la Línea / Red:</label>
+                    {{ form.nombre }}
+                    {% if form.nombre.errors %}<div class="text-danger small mt-1">{{ form.nombre.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-secondary small">Zona de Cobertura:</label>
+                    {{ form.zona }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-secondary small">Capacidad Máxima (kW):</label>
+                    {{ form.capacidad_maxima }}
+                </div>
+                <button type="submit" class="btn btn-success w-100 fw-bold">Guardar Red Eléctrica</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0 bg-white rounded-3 p-4">
+            <h4 class="fw-bold text-dark mb-3">📋 Redes e Interconexiones Activas</h4>
+            <hr>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Línea / Red</th>
+                            <th>📍 Zona</th>
+                            <th>🗺️ Municipio</th>
+                            <th>Capacidad</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for red in redes %}
+                        <tr>
+                            <td class="fw-bold text-success">{{ red.nombre }}</td>
+                            <td><span class="badge bg-info text-dark px-2 py-1">{{ red.zona.nombre }}</span></td>
+                            <td class="text-muted">{{ red.zona.municipio.nombre }}</td>
+                            <td class="fw-bold">{{ red.capacidad_maxima }} kW</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-4">No hay redes de distribución eléctrica registradas.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
