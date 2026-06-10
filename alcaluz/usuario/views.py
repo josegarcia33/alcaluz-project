@@ -2,7 +2,8 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import login as auth_login, authenticate
-from .forms import RegistroUsuarioForm, LoginForm
+from usuario.forms import RegistroUsuarioForm, LoginForm, ZonaForm, RedForm
+from usuario.models import Zona, Red
 
 #para lo de la pagina cero o página principal del app
 def landing_page(current_request):
@@ -78,3 +79,34 @@ def admin_dashboard(current_request):
 def tecnico_dashboard(current_request):
     return render(current_request, 'account/dashboard.html', {'rol': 'Técnico'})
 
+
+@login_required(login_url='usuario:login')
+def registrar_zona(current_request):
+    # Obtenemos las zonas con una consulta optimizada trayendo su municipio de un solo golpe
+    zonas = Zona.objects.select_related('municipio').all().order_by('-fecha_registro')
+    
+    if current_request.method == 'POST':
+        form = ZonaForm(current_request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('usuario:registrar_zona')
+    else:
+        form = ZonaForm()
+        
+    return render(current_request, 'municipal/registrar_zona.html', {'form': form, 'zonas': zonas})
+
+
+@login_required(login_url='usuario:login')
+def registrar_red(current_request):
+    # Obtenemos las redes y su cadena de relaciones hacia atrás
+    redes = Red.objects.select_related('zona__municipio').all().order_by('-fecha_registro')
+    
+    if current_request.method == 'POST':
+        form = RedForm(current_request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('usuario:registrar_red')
+    else:
+        form = RedForm()
+        
+    return render(current_request, 'municipal/registrar_red.html', {'form': form, 'redes': redes})

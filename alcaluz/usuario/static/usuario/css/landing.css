@@ -1,0 +1,94 @@
+/* Estilos específicos para la Landing Page de Alcaluz */
+
+body {
+    background-color: #1B68A7;
+    color: #ffffff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar-custom {
+    background-color: #1B68A7;
+    padding: 1.5rem 0;
+}
+
+.navbar-brand-custom {
+    font-weight: bold;
+    font-size: 1.4rem;
+    letter-spacing: 1px;
+}
+
+.nav-link-custom {
+    color: #ffffff !important;
+    margin-right: 1.5rem;
+    font-size: 0.95rem;
+    opacity: 0.9;
+}
+
+.nav-link-custom:hover {
+    opacity: 1;
+}
+
+/* Tarjetas celestes que actúan como placeholders */
+.placeholder-card {
+    background-color: #63B0EF;
+    color: #0D0647;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+    min-height: 250px;
+    border: 2px dashed #ffffff;
+    padding: 2rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+.btn-navy {
+    background-color: #0D0647 !important;
+    color: #ffffff !important;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 50px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.btn-navy:hover {
+    background-color: #050224 !important;
+}
+
+.btn-outline-custom {
+    border: 2px solid #ffffff;
+    color: #ffffff;
+    padding: 0.75rem 2rem;
+    border-radius: 50px;
+    font-weight: bold;
+    background: transparent;
+}
+
+.btn-outline-custom:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+/* Footer institucional */
+.footer-custom {
+    background-color: #134f80;
+    padding: 3rem 0;
+    margin-top: 5rem;
+    font-size: 0.9rem;
+}
+
+.footer-link {
+    color: #ffffff;
+    text-decoration: none;
+    opacity: 0.8;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.footer-link:hover {
+    opacity: 1;
+    text-decoration: underline;
+}

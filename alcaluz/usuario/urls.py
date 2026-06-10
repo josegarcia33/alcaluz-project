@@ -16,4 +16,6 @@ urlpatterns = [
     path('dashboard/', views.dashboard_general, name='dashboard'),
     path('dashboard/admin/', views.admin_dashboard, name='admin_dashboard'),
     path('dashboard/tecnico/', views.tecnico_dashboard, name='tecnico_dashboard'),
+    path('estructura/zona/',views.registrar_zona, name='registrar_zona'),
+    path('estructura/red/', views.registrar_red, name='registrar_red'),
 ]

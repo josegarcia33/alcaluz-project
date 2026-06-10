@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -5,100 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alcaluz - Gestión de Red de Luminarias</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #1B68A7;
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        .navbar-custom {
-            background-color: #1B68A7;
-            padding: 1.5rem 0;
-        }
-        .navbar-brand-custom {
-            font-weight: bold;
-            font-size: 1.4rem;
-            letter-spacing: 1px;
-        }
-        .nav-link-custom {
-            color: #ffffff !important;
-            margin-right: 1.5rem;
-            font-size: 0.95rem;
-            opacity: 0.9;
-        }
-        .nav-link-custom:hover {
-            opacity: 1;
-        }
-
-        /* falta que poner las fotos del landing princpal */
-        .placeholder-card {
-            background-color: #63B0EF;
-            color: #0D0647;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1.1rem;
-            min-height: 250px;
-            border: 2px dashed #ffffff;
-            padding: 2rem;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-        }
-
-        .btn-navy {
-            background-color: #0D0647 !important;
-            color: #ffffff !important;
-            border: none;
-            padding: 0.75rem 2rem;
-            border-radius: 50px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-        .btn-navy:hover {
-            background-color: #050224 !important;
-        }
-
-        .btn-outline-custom {
-            border: 2px solid #ffffff;
-            color: #ffffff;
-            padding: 0.75rem 2rem;
-            border-radius: 50px;
-            font-weight: bold;
-            background: transparent;
-        }
-        .btn-outline-custom:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-        }
-
-        /* Footer */
-        .footer-custom {
-            background-color: #134f80;
-            padding: 3rem 0;
-            margin-top: 5rem;
-            font-size: 0.9rem;
-        }
-        .footer-link {
-            color: #ffffff;
-            text-decoration: none;
-            opacity: 0.8;
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-        .footer-link:hover {
-            opacity: 1;
-            text-decoration: underline;
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'usuario/css/landing.css' %}">
 </head>
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
         <div class="container">
             <a class="navbar-brand navbar-brand-custom" href="#">RED-LUMINARIAS-ALCALUZ</a>
-            <button class="navbar-collapse-button navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
@@ -107,7 +22,7 @@
                     <li class="nav-item"><a class="nav-link nav-link-custom" href="#">Principal</a></li>
                     <li class="nav-item"><a class="nav-link nav-link-custom" href="#">Contacto</a></li>
                     <li class="nav-item">
-                        <a class="btn btn-outline-light px-4 rounded-pill font-weight-bold" href="{% url 'usuario:login' %}">Iniciar sesión</a>
+                        <a class="btn btn-outline-light px-4 rounded-pill fw-bold" href="{% url 'usuario:login' %}">Iniciar sesión</a>
                     </li>
                 </ul>
             </div>
@@ -146,7 +61,7 @@
             <div class="col-lg-6 order-lg-2">
                 <div class="placeholder-card text-center" style="min-height: 280px;">
                     <div>
-                        <p class="mb-0">Gráficos Estadísticos y Paneles Rápidos</p>
+                        <p class="mb-0">📊 Gráficos Estadísticos y Paneles Rápidos</p>
                         <small class="opacity-75">[ poner lo que falta aquí ]</small>
                     </div>
                 </div>
@@ -165,7 +80,7 @@
             <div class="col-lg-6">
                 <div class="placeholder-card text-center">
                     <div>
-                        <p class="mb-0"> Fotografía de Postes de Alumbrado Público</p>
+                        <p class="mb-0">💡 Fotografía de Postes de Alumbrado Público</p>
                         <small class="opacity-75">[ poner lo que falta aquí ]</small>
                     </div>
                 </div>
