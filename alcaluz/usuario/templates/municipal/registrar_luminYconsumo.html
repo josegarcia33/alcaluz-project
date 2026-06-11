@@ -331,9 +331,10 @@
             tt.innerHTML = pageNames[name] + ' <span>/ ' + (name.includes('reg') ? 'Formulario' : 'Listado') + '</span>';
           }
           //si sale como error, no es error, es por poner django en script
-          {% if pagina_activa %}
-            showPage('{{ pagina_activa }}', null);
-          {% endif %}
+            const paginaActiva = "{{ pagina_activa|default:'' }}";
+              if (paginaActiva) {
+                  showPage(paginaActiva, null);
+              }
 
     </script>
 
