@@ -8,7 +8,7 @@
       href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="../static/css/styles.css" />
+    <link rel="stylesheet" href="../../static/usuario/css/styles.css" />
     <!-- ========== Start Section ========== 
     script src="../static/jscript/scripts.js" defer></script>
      ========== End Section ========== -->
@@ -99,33 +99,25 @@
               <tr>
                 <th>Código</th>
                 <th>Potencia</th>
-                <th>Zona</th>
+                <th>Ubicacion</th>
                 <th>Red</th>
                 <th>Instalación</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td><strong>1</strong></td>
-                <td>150W</td>
-                <td>Zona Norte</td>
-                <td>1</td>
-                <td>12/01/2023</td>
-              </tr>
-              <tr>
-                <td><strong>2</strong></td>
-                <td>250W</td>
-                <td>Zona Centro</td>
-                <td>2</td>
-                <td>05/03/2022</td>
-              </tr>
-              <tr>
-                <td><strong>3</strong></td>
-                <td>200W</td>
-                <td>Zona Este</td>
-                <td>3</td>
-                <td>18/07/2024</td>
-              </tr>
+               {% for luminaria in luminarias %}
+                  <tr>
+                    <td><strong>{{ luminaria.id_luminaria }}</strong></td>
+                    <td>{{ luminaria.potencia }}</td>
+                    <td>{{ luminaria.ubicacion }}</td>
+                    <td>{{ luminaria.red.nombre }}</td>
+                    <td>{{ luminaria.fecha_instalacion }}</td>
+                  </tr>
+                {% empty %}
+                  <tr>
+                    <td colspan="5">No hay luminarias registradas.</td>
+                  </tr>
+                {% endfor %}
             </tbody>
           </table>
         </div>
@@ -147,36 +139,45 @@
                     <h1>Formulario de registro de luminaria</h1>
                 </div>
         
-    
+                {% if error_consumo %}
+                  <div class="alert alert-error">
+                    {{ error_consumo }}
+                  </div>
+                {% endif %}
             <!--FORMULARIO -->
-            <div class="form-grid">
+            <form class="form-grid" method="post" action="{% url 'registrar_luminaria' %}">
+                {% csrf_token %}
                 <div class="form-group">
                   <label>Potencia (W) *</label>
-                  <input class="form-control" type="number" placeholder="150">
-                </div>
-                <div class="form-group">
-                  <label>Zona *</label>
-                  <select class="form-control"><option>Seleccionar…</option><option>Zona Norte</option><option>Zona Centro</option><option>Zona Sur</option><option>Zona Este</option></select>
+                  <input name="potencia" class="form-control" type="number" placeholder="150" required>
                 </div>
             
                 <div class="form-group">
                   <label>Red de control *</label>
-                  <select class="form-control"><option>Seleccionar…</option><option>RED-01</option><option>RED-02</option><option>RED-07</option></select>
+                  <select name="red" class="form-control" required>
+                    <option value="">Seleccione la red de control…</option>
+                    {% for red in redes %}
+                        <option value="{{ red.id_red }}">
+                            {{ red.nombre }}
+                        </option>
+                    {% endfor %}
+                  </select>
                 </div>
             
                 <div class="form-group">
                   <label>Ubicacion/ Referencia *</label>
-                  <input class="form-control" placeholder="Ej: Av. Principal frente a parque central">     
+                  <input name="ubicacion" class="form-control" placeholder="Ej: Av. Principal frente a parque central" required>     
                 </div>
             
                 <div class="form-group">
                   <label>Fecha de instalación *</label>
-                  <input class="form-control" type="date">
+                  <input name="fecha_instalacion" class="form-control" type="date" required>
                 </div>
+
                 <div class="action-row">
-                  <button class="btn btn-primary">💾 Guardar luminaria</button>
+                  <button type="submit" class="btn btn-primary">💾 Guardar luminaria</button>
                 </div>
-            </div><!--FIN FORMULARIO -->
+            </form><!--FIN FORMULARIO -->
         </div>     
     </div>
     <!--════════════════════════ FIN REGISTRO DE LUMINARIA ══════════════════════ -->
@@ -218,38 +219,23 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td><strong>1</strong></td>
-                <td>150W</td>
-                <td>300</td>
-                <td>12/01/2023</td>
-                <td>12/01/2023</td>
-                <td>12/01/2023</td>
-                <td>1</td>
-                <td>11</td>
-              </tr>
-              <tr>
-                <td><strong>2</strong></td>
-                <td>250W</td>
-                <td>500</td>
-                <td>12/01/2023</td>
-                <td>05/03/2022</td>
-                <td>12/01/2023</td>
-                <td>2</td>
-                <td>12</td>
-              </tr>
-              <tr>
-                <td><strong>3</strong></td>
-                <td>200W</td>
-                <td>400</td>
-                <td>12/01/2023</td>
-                <td>18/07/2024</td>
-                <td>12/01/2023</td>
-                <td>3</td>
-                <td>13</td>
-              </tr>
-              
-            </tbody>
+              {% for consumo in consumos %}
+                  <tr>
+                    <td><strong>{{ consumo.id_registro }}</strong></td>
+                    <td>{{ consumo.consumo_kwh }}</td>
+                    <td>{{ consumo.costo }}</td>
+                    <td>{{ consumo.periodo_inicio }}</td>
+                    <td>{{ consumo.periodo_fin }}</td>
+                    <td>{{ consumo.fecha_registro }}</td>
+                    <td>{{ consumo.luminaria.id_luminaria }}</td>
+                    <td>{{ consumo.tecnico.id }}</td>
+                  </tr>
+                {% empty %}
+                  <tr>
+                    <td colspan="8">No hay consumos registrados.</td>
+                  </tr>
+                {% endfor %}              
+            </tbody>          
           </table>
         </div>
       </div>
@@ -269,50 +255,64 @@
                 <div class="stepe">
                     <h1>Formulario de registro de consumo</h1>
                 </div>
-        
+        {% if error_consumo %}
+          <div class="alert alert-error">
+            {{ error_consumo }}
+          </div>
+        {% endif %}
     
             <!--FORMULARIO -->
-            <div class="form-grid">
+             <form class="form-grid" method="post" action="{% url 'registrar_consumo' %}">
+                {% csrf_token %}
 
                 <div class="form-group">
                   <label>Luminaria *</label>
-                  <select class="form-control"><option>Seleccionar…</option><option>lum-01</option><option>lum-02</option><option>lum-03</option></select>
+                  <select name="luminaria" class="form-control" required>
+                      <option value="">Seleccione id de la luminaria</option>
+                    {% for luminaria in luminarias %}
+                      <option value="{{ luminaria.id_luminaria}}">
+                        {{ luminaria.id_luminaria }} - {{ luminaria.ubicacion }}
+                      </option>
+                    {% empty %}
+                      <option value="">No hay luminarias registradas</option>
+                    {% endfor %}
+                  </select>
                 </div>
 
                 <div class="form-group">
-                  <label>consumo (kWh) *</label>
-                  <input class="form-control" type="number" placeholder="150">
+                  <label>consumo *</label>
+                  <input name="consumo_kwh" class="form-control" type="number" placeholder="150" required>
                 </div>
 
                 <div class="form-group">
                   <label>Periodo inicio *</label>
-                  <input class="form-control" type="date">
+                  <input name="periodo_inicio" class="form-control" type="date" required>
                 </div>
 
                 <div class="form-group">
                   <label>Periodo fin *</label>
-                  <input class="form-control" type="date">
+                  <input name="periodo_fin" class="form-control" type="date" required>
                 </div>
-
-                <div class="form-group">
-                  <label>costo *</label>
-                  <input class="form-control" type="number" placeholder="150">
-                </div>
-
-                <div class="form-group">
-                  <label>Fecha de registro *</label>
-                  <input class="form-control" type="date">
-                </div>    
+               
 
                 <div class="form-group">
                   <label>Tecnico *</label>
-                  <select class="form-control"><option>Seleccione su id tecnico…</option><option>11</option><option>12</option><option>13</option></select>
+                  <select name="tecnico" class="form-control" required>
+                    <option value="">Seleccione un tecnico…</option>
+                    {% for tecnico in tecnicos %}
+                      <option value="{{ tecnico.id }}">
+                        {{ tecnico.username }}  
+                      </option>
+                      {% empty %}
+                        <option value="">No hay técnicos registrados</option>
+                      {% endfor %}
+                    </select>
                 </div>
-                
+                  
                 <div class="action-row">
-                  <button class="btn btn-primary">💾 Guardar Consumo</button>
+                  <button type="submit" class="btn btn-primary">💾 Guardar Consumo</button>
                 </div>
-            </div><!--FIN FORMULARIO -->
+              </form><!--FIN FORMULARIO -->
         </div>     
     </div>
     <!--════════════════════════════ FIN REGISTRO DE CONSUMO ════════════════════════════ -->

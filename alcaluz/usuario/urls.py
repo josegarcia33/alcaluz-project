@@ -17,6 +17,9 @@ Including another URLconf
 from django.urls import path
 from . import views
 
+
 urlpatterns = [
     path('', views.inicio, name='inicio'),
+    path('registrar_luminYconsumo/', views.registrar_luminaria, name='registrar_luminaria'),
+    path('registrar_consumo/', views.registrar_consumo, name='registrar_consumo'),
 ]
