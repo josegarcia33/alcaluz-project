@@ -329,7 +329,12 @@
             if (navEl) navEl.classList.add('active');
             const tt = document.getElementById('topbar-title');
             tt.innerHTML = pageNames[name] + ' <span>/ ' + (name.includes('reg') ? 'Formulario' : 'Listado') + '</span>';
+          
           }
+          //si sale como error, no es error 
+          {% if pagina_activa %}
+                showPage('{{ pagina_activa }}', null);
+          {% endif %}
 
     </script>
 

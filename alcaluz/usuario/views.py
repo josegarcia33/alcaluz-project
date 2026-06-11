@@ -2,6 +2,7 @@ from django.shortcuts import redirect, render
 from .models import Luminaria, Red, RegistroConsumo
 from django.contrib.auth.models import User
 from decimal import Decimal
+from datetime import datetime
 def inicio(request):
     return render(request, 'municipal/registrar_luminYconsumo.html')
 
@@ -39,12 +40,21 @@ def registrar_consumo(request):
             contexto['error_consumo'] = 'Debe completar todos los campos del registro de consumo.'
             return render(request, 'municipal/registrar_luminYconsumo.html', contexto)
 
+        fecha_inicio = datetime.strptime(periodo_inicio, '%Y-%m-%d').date()
+        fecha_fin = datetime.strptime(periodo_fin, '%Y-%m-%d').date()
+
+        if fecha_inicio >= fecha_fin:
+            contexto = datos_formulario()
+            contexto['pagina_activa'] = 'reg-consumo'
+            contexto['error_consumo'] = 'La fecha de inicio debe ser anterior a la fecha de fin.'
+            return render(request, 'municipal/registrar_luminYconsumo.html', contexto)
+
         consumo_kwh = Decimal(consumo)
         costo = consumo_kwh * Decimal('0.10')
 
         RegistroConsumo.objects.create(
-            periodo_inicio=periodo_inicio,
-            periodo_fin=periodo_fin,
+            periodo_inicio=fecha_inicio,
+            periodo_fin=fecha_fin,
             luminaria_id=luminaria,
             tecnico_id=tecnico,
             consumo_kwh=consumo_kwh,
@@ -53,6 +63,7 @@ def registrar_consumo(request):
         return redirect('registrar_luminaria')
 
     return render(request, 'municipal/registrar_luminYconsumo.html', datos_formulario())
+
 
 def datos_formulario():
     return {
