@@ -11,7 +11,6 @@ def inicio(request):
 def registrar_luminaria(request):
     if request.method == 'POST':
         Luminaria.objects.create(
-            id_luminaria = request.POST['id_luminaria'],
             potencia = request.POST['potencia'],
             ubicacion = request.POST['ubicacion'],
             fecha_instalacion = request.POST['fecha_instalacion'],
