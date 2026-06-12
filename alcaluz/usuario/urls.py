@@ -18,4 +18,5 @@ urlpatterns = [
     path('dashboard/tecnico/', views.tecnico_dashboard, name='tecnico_dashboard'),
     path('estructura/zona/',views.registrar_zona, name='registrar_zona'),
     path('estructura/red/', views.registrar_red, name='registrar_red'),
+    path('reportes/consumo/', views.generar_reporte_consumo, name='generar_reporte_consumo'),
 ]

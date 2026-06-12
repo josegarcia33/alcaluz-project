@@ -29,11 +29,10 @@ class RegistroUsuarioForm(UserCreationForm):
 class ZonaForm(forms.ModelForm):
     class Meta:
         model = Zona
-        fields = ['nombre', 'municipio', 'descripcion']
+        fields = ['nombre', 'municipio']
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej. Colonia Escalón o Parque Central'}),
             'municipio': forms.Select(attrs={'class': 'form-select'}),
-            'descripcion': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Referencias de la zona...'}),
         }
 
     # Validación para evitar duplicar una Zona en el mismo Municipio
@@ -51,11 +50,10 @@ class ZonaForm(forms.ModelForm):
 class RedForm(forms.ModelForm):
     class Meta:
         model = Red
-        fields = ['nombre', 'zona', 'capacidad_maxima']
+        fields = ['nombre', 'zona']
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej. Red de Distribución Norte-1'}),
             'zona': forms.Select(attrs={'class': 'form-select'}),
-            'capacidad_maxima': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Capacidad en kW'}),
         }
 
     # Validación para evitar nombres de Red repetidos en todo el sistema

@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'sistema',
+    #'sistema',
 ]
 
 MIDDLEWARE = [
@@ -82,7 +82,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'alcaluzdb',
         'USER': 'postgres',
-        'PASSWORD': 'root',
+        'PASSWORD': 'mm24067',
         'HOST': 'localhost', 
         'PORT': '5432',
     }

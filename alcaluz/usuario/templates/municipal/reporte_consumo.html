@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}Reportes - Consumo Energético{% endblock %}
+
+{% block content %}
+<div class="row mt-4 text-dark">
+    
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 bg-white rounded-3 p-4">
+            <h4 class="fw-bold text-dark mb-3">📊 Generar Reporte</h4>
+            <hr>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-secondary small">Nivel del Reporte:</label>
+                    <select name="tipo_nivel" class="form-select" required>
+                        <option value="" disabled selected>Seleccione un nivel...</option>
+                        <option value="municipio">Todo el Municipio</option>
+                        <option value="zona">Por Zona Específica</option>
+                        <option value="red">Por Red Eléctrica</option>
+                        <option value="luminaria">Por Luminaria Individual</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-secondary small">Fecha de Inicio:</label>
+                    <input type="date" name="fecha_inicio" class="form-control" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-secondary small">Fecha de Fin:</label>
+                    <input type="date" name="fecha_fin" class="form-control" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary w-100 fw-bold">Generar y Descargar</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0 bg-white rounded-3 p-4">
+            <h4 class="fw-bold text-dark mb-3">⚡ Historial de Consumos Registrados</h4>
+            <hr>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Luminaria ID</th>
+                            <th>🔌 Red / Zona</th>
+                            <th>Consumo</th>
+                            <th>Costo</th>
+                            <th>Fecha Registro</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for registro in registros %}
+                        <tr>
+                            <td class="fw-bold text-primary">#{{ registro.luminaria.id_luminaria }}</td>
+                            <td>
+                                <span class="badge bg-light text-dark border">{{ registro.luminaria.red.nombre }}</span><br>
+                                <span class="text-muted small">{{ registro.luminaria.red.zona.nombre }}</span>
+                            </td>
+                            <td class="fw-bold text-danger">{{ registro.consumo_kwh }} kWh</td>
+                            <td class="text-success fw-bold">${{ registro.costo }}</td>
+                            <td class="small">{{ registro.fecha_registro|date:"d/m/Y" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">Aún no hay registros de consumo en el sistema.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+</div>
+{% endblock %}
