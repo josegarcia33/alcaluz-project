@@ -199,14 +199,15 @@ display: flex;
   color: whitesmoke;
 }
 .btn-ghost {
-  background: transparent;
+  
   color: var(--muted);
   
-  background-color: #0d0647;
+  background-color: #0d0647 !important;
 }
 .btn-ghost:hover {
   border-color: var(--muted);
   color: gray;
+  background-color: #15d70b;
 }
 
 .action-row {
