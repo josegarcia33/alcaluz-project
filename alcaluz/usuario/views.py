@@ -3,16 +3,12 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import login as auth_login, authenticate
 from usuario.forms import RegistroUsuarioForm, LoginForm, ZonaForm, RedForm
-<<<<<<< HEAD
 from usuario.models import Zona, Red, Luminaria, RegistroConsumo, Reporte
 
-=======
-from usuario.models import Zona, Red
 from .models import Luminaria, Red, RegistroConsumo
 from django.contrib.auth.models import User
 from decimal import Decimal
 from datetime import datetime
->>>>>>> 2467fabae6783f2b8fc676eb11958313affcb95a
 #para lo de la pagina cero o página principal del app
 def landing_page(current_request):
     if current_request.user.is_authenticated:
@@ -110,11 +106,7 @@ def registrar_zona(current_request):
 @login_required(login_url='usuario:login')
 def registrar_red(current_request):
     # Obtenemos las redes y su cadena de relaciones hacia atrás
-<<<<<<< HEAD
     redes = Red.objects.select_related('zona__municipio').all().order_by('-id_red')
-=======
-    redes = Red.objects.select_related('zona__municipio').all()
->>>>>>> ef432e5fbb962da756bc3831cf5bdf0fdf9ed258
     
     if current_request.method == 'POST':
         form = RedForm(current_request.POST)
@@ -126,7 +118,6 @@ def registrar_red(current_request):
         
     return render(current_request, 'municipal/registrar_red.html', {'form': form, 'redes': redes})
 
-<<<<<<< HEAD
 import io
 from django.http import FileResponse
 from reportlab.lib.pagesizes import letter
@@ -250,7 +241,6 @@ def generar_reporte_consumo(current_request):
         'registros': registros,
     }
     return render(current_request, 'municipal/reporte_consumo.html', context)
-=======
 def inicio(request):
     contexto = datos_formulario()
     contexto['form'] = ZonaForm()
@@ -357,4 +347,3 @@ def datos_formulario():
         'luminarias_count': luminarias.count(),
         'consumos_count': consumos.count(),
     }
->>>>>>> 2467fabae6783f2b8fc676eb11958313affcb95a
