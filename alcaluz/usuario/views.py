@@ -136,7 +136,8 @@ def registrar_luminaria(request):
                 return redirect('usuario:registrar_luminaria')
             else:
                 contexto = datos_formulario()
-                contexto['form_zona'] = form
+                contexto['form'] = form
+                contexto['form_red'] = RedForm()
                 contexto['pagina_activa'] = 'reg-zonas'
                 return render(request, 'municipal/registros.html', contexto)        # Verificar si es un registro de red
         if 'nombre' in request.POST and 'zona' in request.POST and 'municipio' not in request.POST:
