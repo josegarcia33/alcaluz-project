@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registrar Luminaria</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../static/usuario/css/styles.css" />
+    <!-- ========== Start Section ========== 
+    script src="../static/jscript/scripts.js" defer></script>
+     ========== End Section ========== -->
+    
+    <
+  </head>
+  
+  <body>
+    <!--════════════════════════════ INICIO SIDEBAR ════════════════════════════ -->
+    <nav class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">💡</div>
+        <div class="brand-text">ALCALUZ<span>Alumbrado Público</span></div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Principal</div>
+        <div class="nav-item active" onclick="showPage('dashboard', this)">
+          <span class="ico">🏠</span> Dashboard
+        </div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Infraestructura</div>
+        <div class="nav-item" onclick="showPage('zonas', this)">
+          <span class="ico">📍</span> Zonas
+        </div>
+        <div class="nav-item" onclick="showPage('redes', this)">
+          <span class="ico">🔗</span> Redes
+        </div>
+        <div class="nav-item" onclick="showPage('luminarias', this)">
+          <span class="ico">💡</span> Luminarias
+          <span class="badge">3</span>
+        </div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Operaciones</div>
+        <div class="nav-item" onclick="showPage('consumo', this)">
+          <span class="ico">⚡</span> Consumo
+        </div>
+        <div class="nav-item" onclick="showPage('reportes', this)">
+          <span class="ico">📈</span> Reportes
+        </div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Administración</div>
+        <div class="nav-item" onclick="showPage('usuarios', this)">
+          <span class="ico">👥</span> Usuarios
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="avatar" title="logo user">A</div>
+          <div class="user-info">
+            <div class="user-name">Admin General</div>
+            <div class="user-role">Administrador</div>
+          </div>
+          <button class="logout-btn" onclick="doLogout()" title="Cerrar sesión">⏻</button>
+        </div>
+      </div>
+    </nav>
+    <!--════════════════════════════ FIN SIDEBAR ════════════════════════════ -->
+  
+    <!--════════════════════════════ INICIO LUMINARIAS ════════════════════════════ -->
+    <div class="page active" id="page-luminarias"><!--page active porque es la primera página que se muestra -->
+      <div class="section-hdr">
+        <h2 style="font-size: 20px">💡 Luminarias registradas</h2>
+        <button class="btn btn-primary" onclick="showPage('reg-lum', null)">
+          ＋ Registrar luminaria
+        </button>
+      </div>
+      <div class="filter-bar">
+        <select class="form-control">
+          <option>Todas las zonas</option>
+          <option>zona norte</option>
+          <option>zona centro</option>
+          <option>zona este</option>
+        </select>
+      </div>
+
+      <div class="TablaPrincipal">
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Potencia</th>
+                <th>Ubicacion</th>
+                <th>Red</th>
+                <th>Instalación</th>
+              </tr>
+            </thead>
+            <tbody>
+               {% for luminaria in luminarias %}
+                  <tr>
+                    <td><strong>{{ luminaria.id_luminaria }}</strong></td>
+                    <td>{{ luminaria.potencia }}</td>
+                    <td>{{ luminaria.ubicacion }}</td>
+                    <td>{{ luminaria.red.nombre }}</td>
+                    <td>{{ luminaria.fecha_instalacion }}</td>
+                  </tr>
+                {% empty %}
+                  <tr>
+                    <td colspan="5">No hay luminarias registradas.</td>
+                  </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!--════════════════════════════ FIN LUMINARIAS ════════════════════════════ -->
+
+    <!--════════════════════════════ INICIO REGISTRO DE LUMINARIA ══════════════════════ -->
+    <div class="page" id="page-reg-lum">
+        <div class="section-hdr">
+          <h2>💡 Registrar luminaria</h2>
+          <button class="btn btn-ghost" onclick="showPage('luminarias', null)">
+            ← Volver
+          </button>
+        </div>
+
+        <div class="TablaForm">           
+                <div class="stepe">
+                    <h1>Formulario de registro de luminaria</h1>
+                </div>
+        
+                {% if error_consumo %}
+                  <div class="alert alert-error">
+                    {{ error_consumo }}
+                  </div>
+                {% endif %}
+            <!--FORMULARIO -->
+            <form class="form-grid" method="post" action="{% url 'registrar_luminaria' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                  <label>Potencia (W) *</label>
+                  <input name="potencia" class="form-control" type="number" placeholder="150" required>
+                </div>
+            
+                <div class="form-group">
+                  <label>Red de control *</label>
+                  <select name="red" class="form-control" required>
+                    <option value="">Seleccione la red de control…</option>
+                    {% for red in redes %}
+                        <option value="{{ red.id_red }}">
+                            {{ red.nombre }}
+                        </option>
+                    {% endfor %}
+                  </select>
+                </div>
+            
+                <div class="form-group">
+                  <label>Ubicacion/ Referencia *</label>
+                  <input name="ubicacion" class="form-control" placeholder="Ej: Av. Principal frente a parque central" required>     
+                </div>
+            
+                <div class="form-group">
+                  <label>Fecha de instalación *</label>
+                  <input name="fecha_instalacion" class="form-control" type="date" required>
+                </div>
+
+                <div class="action-row">
+                  <button type="submit" class="btn btn-primary">💾 Guardar luminaria</button>
+                </div>
+            </form><!--FIN FORMULARIO -->
+        </div>     
+    </div>
+    <!--════════════════════════ FIN REGISTRO DE LUMINARIA ══════════════════════ -->
+    
+
+
+
+
+
+
+
+        <!--════════════════════════════ INICIO CONSUMOS ════════════════════════════ -->
+    <div class="page" id="page-consumo">
+      <div class="section-hdr">
+        <h2 style="font-size: 20px">⚡ Consumos registrados</h2>
+        <button class="btn btn-primary" onclick="showPage('reg-consumo', null)">
+          ＋ Registrar consumo
+        </button>
+      </div>
+      <!--<div class="filter-bar">
+        <select class="form-control">
+          <option>Todas las zonas</option>
+        </select> 
+      </div>-->
+
+      <div class="TablaPrincipal">
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>id</th>
+                <th>consumo_kwh</th>
+                <th>costo</th>
+                <th>periodo_inicio</th>
+                <th>periodo_fin</th>
+                <th>fecha_registro</th>
+                <th>id_lum</th>
+                <th>id_tecnico</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for consumo in consumos %}
+                  <tr>
+                    <td><strong>{{ consumo.id_registro }}</strong></td>
+                    <td>{{ consumo.consumo_kwh }}</td>
+                    <td>{{ consumo.costo }}</td>
+                    <td>{{ consumo.periodo_inicio }}</td>
+                    <td>{{ consumo.periodo_fin }}</td>
+                    <td>{{ consumo.fecha_registro }}</td>
+                    <td>{{ consumo.luminaria.id_luminaria }}</td>
+                    <td>{{ consumo.tecnico.id }}</td>
+                  </tr>
+                {% empty %}
+                  <tr>
+                    <td colspan="8">No hay consumos registrados.</td>
+                  </tr>
+                {% endfor %}              
+            </tbody>          
+          </table>
+        </div>
+      </div>
+    </div>
+    <!--════════════════════════════ FIN CONSUMOS ════════════════════════════ -->
+
+    <!--════════════════════════════ INICIO REGISTRO DE CONSUMO ════════════════════════════ -->
+    <div class="page" id="page-reg-consumo">
+        <div class="section-hdr">
+          <h2>⚡ Registrar consumo</h2>
+          <button class="btn btn-ghost" onclick="showPage('consumo', null)">
+            ← Volver
+          </button>
+        </div>
+
+        <div class="TablaForm">           
+                <div class="stepe">
+                    <h1>Formulario de registro de consumo</h1>
+                </div>
+        {% if error_consumo %}
+          <div class="alert alert-error">
+            {{ error_consumo }}
+          </div>
+        {% endif %}
+    
+            <!--FORMULARIO -->
+             <form class="form-grid" method="post" action="{% url 'registrar_consumo' %}">
+                {% csrf_token %}
+
+                <div class="form-group">
+                  <label>Luminaria *</label>
+                  <select name="luminaria" class="form-control" required>
+                      <option value="">Seleccione id de la luminaria</option>
+                    {% for luminaria in luminarias %}
+                      <option value="{{ luminaria.id_luminaria}}">
+                        {{ luminaria.id_luminaria }} - {{ luminaria.ubicacion }}
+                      </option>
+                    {% empty %}
+                      <option value="">No hay luminarias registradas</option>
+                    {% endfor %}
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label>consumo *</label>
+                  <input name="consumo_kwh" class="form-control" type="number" placeholder="150" required>
+                </div>
+
+                <div class="form-group">
+                  <label>Periodo inicio *</label>
+                  <input name="periodo_inicio" class="form-control" type="date" required>
+                </div>
+
+                <div class="form-group">
+                  <label>Periodo fin *</label>
+                  <input name="periodo_fin" class="form-control" type="date" required>
+                </div>
+               
+
+                <div class="form-group">
+                  <label>Tecnico *</label>
+                  <select name="tecnico" class="form-control" required>
+                    <option value="">Seleccione un tecnico…</option>
+                    {% for tecnico in tecnicos %}
+                      <option value="{{ tecnico.id }}">
+                        {{ tecnico.username }}  
+                      </option>
+                      {% empty %}
+                        <option value="">No hay técnicos registrados</option>
+                      {% endfor %}
+                    </select>
+                </div>
+                  
+                <div class="action-row">
+                  <button type="submit" class="btn btn-primary">💾 Guardar Consumo</button>
+                </div>
+              </form><!--FIN FORMULARIO -->
+        </div>     
+    </div>
+    <!--════════════════════════════ FIN REGISTRO DE CONSUMO ════════════════════════════ -->
+    <script>
+              // ── PAGE ROUTING ──
+          const pageNames = {
+            luminarias:'Luminarias',  'reg-lum':'Registrar luminaria','reg-consumo':'Registrar consumo',
+            consumo:'Consumo',reportes:'Reportes',usuarios:'Usuarios'
+          };
+          function showPage(name, navEl) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-' + name).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            if (navEl) navEl.classList.add('active');
+            const tt = document.getElementById('topbar-title');
+            tt.innerHTML = pageNames[name] + ' <span>/ ' + (name.includes('reg') ? 'Formulario' : 'Listado') + '</span>';
+          }
+          //si sale como error, no es error, es por poner django en script
+            const paginaActiva = "{{ pagina_activa|default:'' }}";
+              if (paginaActiva) {
+                  showPage(paginaActiva, null);
+              }
+
+    </script>
+
+</body>
+</html>

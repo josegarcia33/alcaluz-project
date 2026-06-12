@@ -18,5 +18,11 @@ urlpatterns = [
     path('dashboard/tecnico/', views.tecnico_dashboard, name='tecnico_dashboard'),
     path('estructura/zona/',views.registrar_zona, name='registrar_zona'),
     path('estructura/red/', views.registrar_red, name='registrar_red'),
+<<<<<<< HEAD
     path('reportes/consumo/', views.generar_reporte_consumo, name='generar_reporte_consumo'),
+=======
+    path('registrar_luminYconsumo/', views.registrar_luminaria, name='registrar_luminaria'),
+    path('registrar_consumo/', views.registrar_consumo, name='registrar_consumo'),
+    path('', views.inicio, name='inicio'),
+>>>>>>> 2467fabae6783f2b8fc676eb11958313affcb95a
 ]
