@@ -101,13 +101,20 @@ def registrar_zona(current_request):
     else:
         form = ZonaForm()
         
-    return render(current_request, 'municipal/registrar_zona.html', {'form': form, 'zonas': zonas})
+    return render(current_request, 'municipal/registrar_zona.html', {
+        'form': form, 
+        'zonas': zonas
+    })
 
 
 @login_required(login_url='usuario:login')
 def registrar_red(current_request):
     # Obtenemos las redes y su cadena de relaciones hacia atrás
+<<<<<<< HEAD
     redes = Red.objects.select_related('zona__municipio').all().order_by('-id_red')
+=======
+    redes = Red.objects.select_related('zona__municipio').all()
+>>>>>>> ef432e5fbb962da756bc3831cf5bdf0fdf9ed258
     
     if current_request.method == 'POST':
         form = RedForm(current_request.POST)
@@ -245,27 +252,54 @@ def generar_reporte_consumo(current_request):
     return render(current_request, 'municipal/reporte_consumo.html', context)
 =======
 def inicio(request):
-    return render(request, 'municipal/registrar_luminYconsumo.html')
+    contexto = datos_formulario()
+    contexto['form'] = ZonaForm()
+    contexto['form_red'] = RedForm()
+    return render(request, 'municipal/registros.html', contexto)
 
 
 
 
 def registrar_luminaria(request):
     if request.method == 'POST':
-        Luminaria.objects.create(
-            potencia = request.POST['potencia'],
-            ubicacion = request.POST['ubicacion'],
-            fecha_instalacion = request.POST['fecha_instalacion'],
-            red_id = request.POST['red']
-         )
-        return redirect('registrar_luminaria')
+        # Verificar si es un registro de zona
+        if 'nombre' in request.POST and 'municipio' in request.POST:
+            form = ZonaForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('usuario:registrar_luminaria')
+            else:
+                contexto = datos_formulario()
+                contexto['form'] = form
+                contexto['form_red'] = RedForm()
+                contexto['pagina_activa'] = 'reg-zonas'
+                return render(request, 'municipal/registros.html', contexto)        # Verificar si es un registro de red
+        if 'nombre' in request.POST and 'zona' in request.POST and 'municipio' not in request.POST:
+            form_red = RedForm(request.POST)
+            if form_red.is_valid():
+                form_red.save()
+                return redirect('usuario:registrar_luminaria')
+            else:
+                contexto = datos_formulario()
+                contexto['form'] = ZonaForm()
+                contexto['form_red'] = form_red
+                contexto['pagina_activa'] = 'reg-redes'
+                return render(request, 'municipal/registros.html', contexto)
+        # Registro de luminaria
+        if 'potencia' in request.POST and 'red' in request.POST:
+            Luminaria.objects.create(
+                potencia = request.POST['potencia'],
+                ubicacion = request.POST['ubicacion'],
+                fecha_instalacion = request.POST['fecha_instalacion'],
+                red_id = request.POST['red']
+             )
+            return redirect('usuario:registrar_luminaria')
        
     
-    redes = Red.objects.all()
-    luminarias = Luminaria.objects.select_related('red').all()
-    tecnicos = User.objects.filter(groups__name='Técnico')
-    
-    return render(request, 'municipal/registrar_luminYconsumo.html', datos_formulario())
+    contexto = datos_formulario()
+    contexto['form'] = ZonaForm()
+    contexto['form_red'] = RedForm()
+    return render(request, 'municipal/registros.html', contexto)
 
 
 def registrar_consumo(request):
@@ -279,7 +313,7 @@ def registrar_consumo(request):
         if not luminaria or not consumo or not periodo_inicio or not periodo_fin or not tecnico:
             contexto = datos_formulario()
             contexto['error_consumo'] = 'Debe completar todos los campos del registro de consumo.'
-            return render(request, 'municipal/registrar_luminYconsumo.html', contexto)
+            return render(request, 'municipal/registros.html', contexto)
 
         fecha_inicio = datetime.strptime(periodo_inicio, '%Y-%m-%d').date()
         fecha_fin = datetime.strptime(periodo_fin, '%Y-%m-%d').date()
@@ -288,7 +322,7 @@ def registrar_consumo(request):
             contexto = datos_formulario()
             contexto['pagina_activa'] = 'reg-consumo'
             contexto['error_consumo'] = 'La fecha de inicio debe ser anterior a la fecha de fin.'
-            return render(request, 'municipal/registrar_luminYconsumo.html', contexto)
+            return render(request, 'municipal/registros.html', contexto)
 
         consumo_kwh = Decimal(consumo)
         costo = consumo_kwh * Decimal('0.10')
@@ -303,14 +337,24 @@ def registrar_consumo(request):
         )
         return redirect('registrar_luminaria')
 
-    return render(request, 'municipal/registrar_luminYconsumo.html', datos_formulario())
+    return render(request, 'municipal/registros.html', datos_formulario())
 
 
 def datos_formulario():
+    zonas = Zona.objects.select_related('municipio').all().order_by('-id_zona')
+    redes = Red.objects.all()
+    luminarias = Luminaria.objects.select_related('red').all()
+    consumos = RegistroConsumo.objects.select_related('luminaria', 'tecnico').all()
+
     return {
-        'redes': Red.objects.all(),
-        'luminarias': Luminaria.objects.select_related('red').all(),
+        'zonas': zonas,
+        'redes': redes,
+        'luminarias': luminarias,
         'tecnicos': User.objects.filter(groups__name='Técnico'),
-        'consumos': RegistroConsumo.objects.select_related('luminaria', 'tecnico').all(),
+        'consumos': consumos,
+        'zonas_count': zonas.count(),
+        'redes_count': redes.count(),
+        'luminarias_count': luminarias.count(),
+        'consumos_count': consumos.count(),
     }
 >>>>>>> 2467fabae6783f2b8fc676eb11958313affcb95a
