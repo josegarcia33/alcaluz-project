@@ -13,20 +13,20 @@
                 <hr class="my-4">
                 
                 {% if rol == 'Administrador' %}
-                    <div class="alert alert-info d-inline-block">🛡️ Tienes permisos de <strong>Administrador</strong>. Puedes gestionar zonas, redes y usuarios.</div>
+                    <div class="alert alert-info d-inline-block">🛡️ Tienes permisos de <strong>Administrador</strong>. Puedes gestionar Reportes.</div>
+                    <hr>
+                        <a class="btn btn-primary" href="{% url 'usuario:generar_reporte_consumo' %}"> Ingresar a reportes</a>              
+                        <a class="btn btn-primary" href="{% url 'usuario:registrar_consumo' %}">Ingresar  registros  </a>
+
                 {% elif rol == 'Técnico' %}
                     <div class="alert alert-warning d-inline-block"> ud. tiene  permisos de <strong>Técnico</strong></div>
-                {% endif %}
-                <hr class="my-4">
-                {% if rol == 'Administrador' %}
-                <a class="btn btn-primary" href="{% url 'usuario:generar_reporte_consumo' %}">
-                    Ingresar a reportes
-                </a>
-                {% elif rol == 'Técnico' %}
+                        <hr>
                     <a class="btn btn-primary" href="{% url 'usuario:registrar_consumo' %}">
                         Ingresar  registros 
                     </a>
+
                 {% endif %}
+     
             </div>
         </div>
     </div>

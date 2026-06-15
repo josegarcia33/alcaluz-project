@@ -48,19 +48,24 @@
             
       </div>    
 
-
       <div class="sidebar-footer">
         <div class="sidebar-user">
-          <div class="avatar" title="logo user">T</div>
-         {% if user.is_authenticated %}
-          <div class="user-info">
-            <div class="user-name">Tecnico</div>
-            <div class="user-role">{{ user.username }}</div>
-          </div>
-          <a class="logout-btn" onclick="doLogout()" title="Volver al panel" href="{% url 'usuario:tecnico_dashboard' %}">
-            ⏻
-          </a>
-          {% endif %}
+          {% for grupo in user.groups.all %} 
+              {% if grupo.name == 'Administrador' %}
+                <div class="avatar" title="logo user">A</div>             
+                <div class="user-info">
+                  <div class="user-name">{{ grupo.name }}</div>
+                  <div class="user-role">{{ user.username }}</div>
+                </div>
+              {% elif grupo.name == 'Técnico' %}
+                <div class="avatar" title="logo user">T</div>
+                <div class="user-info">
+                  <div class="user-name">{{ grupo.name }}</div>
+                  <div class="user-role">{{ user.username }}</div>
+                </div>
+              {% endif %}           
+          {% endfor %}   
+          <a class="logout-btn" onclick="doLogout()" title="Volver al panel" href="{% url 'usuario:tecnico_dashboard' %}" style = "text-decoration: none;">⏻</a>                    
         </div>
       </div>
     </nav>
