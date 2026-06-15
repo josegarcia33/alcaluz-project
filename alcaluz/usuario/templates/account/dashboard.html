@@ -18,9 +18,15 @@
                     <div class="alert alert-warning d-inline-block"> ud. tiene  permisos de <strong>Técnico</strong></div>
                 {% endif %}
                 <hr class="my-4">
-                <a class="btn btn-primary" href="{% url 'usuario:registrar_luminaria' %}">
-                    Ingresar a luminarias
+                {% if rol == 'Administrador' %}
+                <a class="btn btn-primary" href="{% url 'usuario:generar_reporte_consumo' %}">
+                    Ingresar a reportes
                 </a>
+                {% elif rol == 'Técnico' %}
+                    <a class="btn btn-primary" href="{% url 'usuario:registrar_consumo' %}">
+                        Ingresar  registros 
+                    </a>
+                {% endif %}
             </div>
         </div>
     </div>
