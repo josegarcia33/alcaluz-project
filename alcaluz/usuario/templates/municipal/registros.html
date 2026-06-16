@@ -1,3 +1,4 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
   <head>
@@ -5,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Registrar Luminaria</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../../static/usuario/css/styles.css" />
+    <link rel="stylesheet" href="{% static 'usuario/css/styles.css' %}" />
+    
     <!-- ========== Start Section ========== 
     script src="../static/jscript/scripts.js" defer></script>
      ========== End Section ========== -->    
@@ -65,16 +67,52 @@
                 </div>
               {% endif %}           
           {% endfor %}   
-          <a class="logout-btn" onclick="doLogout()" title="Volver al panel" href="{% url 'usuario:tecnico_dashboard' %}" style = "text-decoration: none;">⏻</a>                    
+          <a class="logout-btn" onclick="doLogout()" title="Volver al panel" href="{% url 'usuario:registro' %}" style = "text-decoration: none;">⏻</a>                    
         </div>
       </div>
     </nav>
     <!--════════════════════════════ FIN SIDEBAR ════════════════════════════ -->
 
     
-  
+              {% if messages %}
+              <div id="toast-container" style="
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 9999;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+              ">
+                {% for message in messages %}
+                  <div class="toast-msg toast-{{ message.tags }}" style="
+                    background: #1bb476;
+                    color: #fff;
+                    padding: 14px 20px;
+                    border-radius: 10px;
+                    font-size: 14px;
+                    font-weight: 600;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    min-width: 280px;
+                    animation: slideIn 0.3s ease;
+                  ">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+            
+            <style>
+              @keyframes slideIn {
+                from { opacity: 0; transform: translateX(40px); }
+                to   { opacity: 1; transform: translateX(0); }
+              }
+            </style>
     <!--════════════════════════════ INICIO DASHBOARD ════════════════════════════ -->
-    <div class="page active" id="page-dashboard">
+    <div class="page" id="page-dashboard">
       <div class="section-hdr">
         <h2 style="font-size: 20px">📊 Resumen General</h2>
       </div>
@@ -179,25 +217,33 @@
 
         <form class="form-grid" method="post" action="{% url 'usuario:registrar_zona' %}">
           {% csrf_token %}
-          <div class="form-group">
-            <label>Nombre de la Zona / Sector *</label>
-            {{ form.nombre }}
-            {% if form.nombre.errors %}
-              <div class="alert alert-error small mt-1">{{ form.nombre.errors.0 }}</div>
-            {% endif %}
-          </div>
+            <div class="form-group">
+              <label>Nombre de la Zona / Sector *</label>
+              <input name="nombre" class="form-control" placeholder="Ej. zona 1" required>
+            </div>
+
+            <div class="form-group">
+              <label>Municipio Perteneciente *</label>
+              <select name="municipio" class="form-control" required>
+                <option value="">Seleccione un municipio…</option>
+                {% for municipio in municipios %}
+                  <option value="{{ municipio.id_municipio }}">
+                    {{ municipio.nombre }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
 
           <div class="form-group">
-            <label>Municipio Perteneciente *</label>
-            {{ form.municipio }}
-            {% if form.municipio.errors %}
-              <div class="alert alert-error small mt-1">{{ form.municipio.errors.0 }}</div>
-            {% endif %}
+            <label>Tipo de zona *</label>
+            <input name="tipo_zona" class="form-control" placeholder="Ej. Rural" required> 
+            
+            <div class="action">
+            <button type="submit" class="btn btn-primary" style="margin-top: 10px;">💾 Guardar Zona</button>
+          </div>
           </div>   
 
-          <div class="action">
-            <button type="submit" class="btn btn-primary">💾 Guardar Zona</button>
-          </div>
+          
         </form>
       </div>
     </div>
@@ -266,15 +312,20 @@
           {% csrf_token %}
           <div class="form-group">
             <label>Nombre de la Red *</label>
-            {{ form_red.nombre }}
-            {% if form_red.nombre.errors %}
+            <input name="nombre" class="form-control" placeholder="Nombre de la red (Ej. Red 1)" required>
+             {% if form_red.nombre.errors %}
               <div class="alert alert-error small mt-1">{{ form_red.nombre.errors.0 }}</div>
             {% endif %}
           </div>
 
           <div class="form-group">
             <label>Zona *</label>
-            {{ form_red.zona }}
+            <select name="zona" class="form-control" required>
+              <option value="">Seleccione una zona</option>
+              {% for zona in zonas %}
+                <option value="{{ zona.id_zona }}">{{ zona.nombre }}</option>
+              {% endfor %}
+            </select>
             {% if form_red.zona.errors %}
               <div class="alert alert-error small mt-1">{{ form_red.zona.errors.0 }}</div>
             {% endif %}
@@ -290,7 +341,7 @@
 
 
     <!--════════════════════════════ INICIO LUMINARIAS ════════════════════════════ -->
-    <div class="page active" id="page-luminarias"><!--page active porque es la primera página que se muestra -->
+    <div class="page" id="page-luminarias"><!--page active porque es la primera página que se muestra -->
       <div class="section-hdr">
         <h2 style="font-size: 20px">💡 Luminarias registradas</h2>
         <button class="btn btn-primary" onclick="showPage('reg-lum', null)">
@@ -530,10 +581,11 @@
             document.getElementById('page-' + name).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             if (navEl) navEl.classList.add('active');
-            const tt = document.getElementById('topbar-title');
+              const tt = document.querySelector('topbar-title');
+              if (tt)
             tt.innerHTML = pageNames[name] + ' <span>/ ' + (name.includes('reg') ? 'Formulario' : 'Listado') + '</span>';
           }
-          //si sale como error, no es error, es por poner django en script
+          
             const paginaActiva = "{{ pagina_activa|default:'' }}";
               if (paginaActiva) {
                   showPage(paginaActiva, null);
@@ -545,6 +597,15 @@
                       showPage('dashboard', null);
                   }
               }
+            // Auto-ocultar el toast después de 3 segundos
+            const toastContainer = document.getElementById('toast-container');
+            if (toastContainer) {
+              setTimeout(() => {
+                toastContainer.style.transition = 'opacity 0.5s';
+                toastContainer.style.opacity = '0';
+                setTimeout(() => toastContainer.remove(), 500);
+              }, 2000);
+            }
 
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

@@ -1,9 +1,9 @@
-
+from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import login as auth_login, authenticate
 from usuario.forms import RegistroUsuarioForm, LoginForm, ZonaForm, RedForm
-from usuario.models import Zona, Red, Luminaria, RegistroConsumo, Reporte
+from usuario.models import Zona, Red, Luminaria, RegistroConsumo, Reporte, Municipio
 
 from .models import Luminaria, Red, RegistroConsumo
 from django.contrib.auth.models import User
@@ -26,7 +26,7 @@ def login_view(current_request):
                 auth_login(current_request, user)
                 return redirect('usuario:redirect_by_role')
             else:
-                error_message = "los datos son incorrectos, intente de nuevo"
+                messages.error(current_request, "Los datos son incorrectos, intente de nuevo")
     else:
         form = LoginForm()
         
@@ -81,18 +81,44 @@ def tecnico_dashboard(current_request):
 
 @login_required(login_url='usuario:login')
 def registrar_zona(current_request):
-    # Obtenemos las zonas con una consulta optimizada trayendo su municipio de un solo golpe
     zonas = Zona.objects.select_related('municipio').all().order_by('-id_zona')
-    
+    redes = Red.objects.select_related('zona__municipio').all().order_by('-id_red')
+    luminarias = Luminaria.objects.select_related('red').all()
+    consumos = RegistroConsumo.objects.select_related('luminaria__red__zona', 'tecnico').all()
+    tecnicos = User.objects.filter(groups__name='Técnico')
+    municipios = Municipio.objects.all()
+
+    zonas_count = Zona.objects.count()
+    redes_count = Red.objects.count()
+    luminarias_count = Luminaria.objects.count()
+    consumos_count = RegistroConsumo.objects.count()
+
     if current_request.method == 'POST':
         form = ZonaForm(current_request.POST)
         if form.is_valid():
             form.save()
+            messages.success(current_request, "Zona registrada correctamente")
             return redirect('usuario:registrar_zona')
+        # Si el form tiene errores, vuelve al formulario mostrando los errores
     else:
         form = ZonaForm()
-        
-    return render(current_request, 'municipal/registrar_zona.html', {'form': form, 'zonas': zonas})
+
+    # SIEMPRE se llega aquí si no hubo redirect (GET o POST con error)
+    return render(current_request, 'municipal/registros.html', {
+        'form': form,
+        'form_red': RedForm(),
+        'zonas': zonas,
+        'redes': redes,
+        'municipios': municipios,
+        'luminarias': luminarias,
+        'consumos': consumos,
+        'tecnicos': tecnicos,
+        'zonas_count': zonas_count,
+        'redes_count': redes_count,
+        'luminarias_count': luminarias_count,
+        'consumos_count': consumos_count,
+        'pagina_activa': 'reg-zonas',   # ← SIEMPRE presente
+    })
        
         
     
@@ -100,18 +126,41 @@ def registrar_zona(current_request):
 
 @login_required(login_url='usuario:login')
 def registrar_red(current_request):
-    # Obtenemos las redes y su cadena de relaciones hacia atrás
+    zonas = Zona.objects.select_related('municipio').all().order_by('-id_zona')
     redes = Red.objects.select_related('zona__municipio').all().order_by('-id_red')
-    
+    luminarias = Luminaria.objects.select_related('red').all()
+    consumos = RegistroConsumo.objects.select_related('luminaria__red__zona', 'tecnico').all()
+    tecnicos = User.objects.filter(groups__name='Técnico')
+    municipios = Municipio.objects.all().order_by('nombre')
+    zonas_count = Zona.objects.count()
+    redes_count = Red.objects.count()
+    luminarias_count = Luminaria.objects.count()
+    consumos_count = RegistroConsumo.objects.count()
+
     if current_request.method == 'POST':
-        form = RedForm(current_request.POST)
-        if form.is_valid():
-            form.save()
+        form_red = RedForm(current_request.POST)
+        if form_red.is_valid():
+            form_red.save()
+            messages.success(current_request, "Red registrada correctamente")
             return redirect('usuario:registrar_red')
     else:
-        form = RedForm()
-        
-    return render(current_request, 'municipal/registrar_red.html', {'form': form, 'redes': redes})
+        form_red = RedForm()
+
+    return render(current_request, 'municipal/registros.html', {
+        'form': ZonaForm(),
+        'form_red': form_red,
+        'zonas': zonas,
+        'redes': redes,
+        'luminarias': luminarias,
+        'municipios': municipios,
+        'consumos': consumos,
+        'tecnicos': tecnicos,
+        'zonas_count': zonas_count,
+        'redes_count': redes_count,
+        'luminarias_count': luminarias_count,
+        'consumos_count': consumos_count,
+        'pagina_activa': 'reg-redes',   # ← SIEMPRE presente
+    })
 
 import io
 from django.http import FileResponse
@@ -240,6 +289,7 @@ def inicio(request):
     contexto = datos_formulario()
     contexto['form'] = ZonaForm()
     contexto['form_red'] = RedForm()
+    contexto['pagina_activa'] = 'dashboard' 
     return render(request, 'municipal/registros.html', contexto)
 
 
@@ -251,7 +301,7 @@ def registrar_luminaria(request):
         if 'nombre' in request.POST and 'municipio' in request.POST:
             form = ZonaForm(request.POST)
             if form.is_valid():
-                form.save()
+                form.save()                      
                 return redirect('usuario:registrar_luminaria')
             else:
                 contexto = datos_formulario()
@@ -278,6 +328,7 @@ def registrar_luminaria(request):
                 fecha_instalacion = request.POST['fecha_instalacion'],
                 red_id = request.POST['red']
              )
+            messages.success(request, "Luminaria registrada correctamente")
             return redirect('usuario:registrar_luminaria')
        
     
@@ -320,7 +371,8 @@ def registrar_consumo(request):
             consumo_kwh=consumo_kwh,
             costo=costo
         )
-        return redirect('registrar_luminaria')
+        messages.success(request, "Consumo registrado correctamente")
+        return redirect('usuario:registrar_luminaria')
 
     return render(request, 'municipal/registros.html', datos_formulario())
 
@@ -330,11 +382,12 @@ def datos_formulario():
     redes = Red.objects.all()
     luminarias = Luminaria.objects.select_related('red').all()
     consumos = RegistroConsumo.objects.select_related('luminaria', 'tecnico').all()
-
+    municipios = Municipio.objects.all().order_by('nombre')
     return {
         'zonas': zonas,
         'redes': redes,
         'luminarias': luminarias,
+        'municipios': municipios,
         'tecnicos': User.objects.filter(groups__name='Técnico'),
         'consumos': consumos,
         'zonas_count': zonas.count(),
