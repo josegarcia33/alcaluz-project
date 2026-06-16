@@ -20,7 +20,38 @@
                         <option value="luminaria">Por Luminaria Individual</option>
                     </select>
                 </div>
+
+                <!-- NUEVO: Selector de Luminaria Específica (Oculto al inicio) -->
+                <div class="mb-3" id="selector_luminaria" style="display: none;">
+                    <label class="form-label fw-bold text-secondary small">Seleccione la Luminaria:</label>
+                    <select name="luminaria_id" id="luminaria_select" class="form-select">
+                        <option value="" disabled selected>Seleccione una luminaria...</option>
+                        {% for luminaria in luminarias %}
+                            <option value="{{ luminaria.id_luminaria }}">Luminaria #{{ luminaria.id_luminaria }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
                 
+                <div class="mb-3" id="selector_zona" style="display: none;">
+                    <label class="form-label fw-bold text-secondary small">Seleccione la Zona:</label>
+                    <select name="zona_id" id="zona_select" class="form-select">
+                        <option value="" disabled selected>Seleccione una zona...</option>
+                        {% for zona in zonas %}
+                            <option value="{{ zona.id_zona }}">{{ zona.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-3" id="selector_red" style="display: none;">
+                    <label class="form-label fw-bold text-secondary small">Seleccione la Red Eléctrica:</label>
+                    <select name="red_id" id="red_select" class="form-select">
+                        <option value="" disabled selected>Seleccione una red...</option>
+                        {% for red in redes %}
+                            <option value="{{ red.id_red }}">{{ red.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
                 <div class="mb-3">
                     <label class="form-label fw-bold text-secondary small">Fecha de Inicio:</label>
                     <input type="date" name="fecha_inicio" class="form-control" required>
@@ -76,4 +107,52 @@
     </div>
     
 </div>
+
+<!-- NUEVO: Script para mostrar u ocultar el menú de luminarias -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const nivelSelect = document.querySelector('select[name="tipo_nivel"]');
+        
+        // Capturamos los tres divs y sus selects
+        const luminariaDiv = document.getElementById('selector_luminaria');
+        const luminariaInput = document.getElementById('luminaria_select');
+        
+        const zonaDiv = document.getElementById('selector_zona');
+        const zonaInput = document.getElementById('zona_select');
+        
+        const redDiv = document.getElementById('selector_red');
+        const redInput = document.getElementById('red_select');
+
+        // Función para ocultar todo y quitar el modo obligatorio
+        function resetSelectors() {
+            luminariaDiv.style.display = 'none';
+            luminariaInput.required = false;
+            luminariaInput.value = '';
+
+            zonaDiv.style.display = 'none';
+            zonaInput.required = false;
+            zonaInput.value = '';
+
+            redDiv.style.display = 'none';
+            redInput.required = false;
+            redInput.value = '';
+        }
+
+        nivelSelect.addEventListener('change', function() {
+            resetSelectors(); // Primero limpiamos la pantalla
+
+            // Luego mostramos solo el que necesitamos
+            if (this.value === 'luminaria') {
+                luminariaDiv.style.display = 'block';
+                luminariaInput.required = true;
+            } else if (this.value === 'zona') {
+                zonaDiv.style.display = 'block';
+                zonaInput.required = true;
+            } else if (this.value === 'red') {
+                redDiv.style.display = 'block';
+                redInput.required = true;
+            }
+        });
+    });
+</script>
 {% endblock %}

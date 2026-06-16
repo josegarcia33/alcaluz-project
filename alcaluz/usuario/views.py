@@ -177,19 +177,45 @@ def generar_reporte_consumo(current_request):
     redes = Red.objects.all()
     luminarias = Luminaria.objects.all()
 
-    # Filtro por defecto (traer todo al cargar la página por primera vez)
+    # Filtro por defecto
     registros = RegistroConsumo.objects.select_related('luminaria__red__zona').all().order_by('-fecha_registro')
 
     # 2. Si el usuario presiona el botón azul "Generar y Descargar" (Petición POST)
     if current_request.method == 'POST':
-        tipo_nivel = current_request.POST.get('tipo_nivel')
+        tipo_nivel = current_request.POST.get('tipo_nivel', '') 
         fecha_inicio = current_request.POST.get('fecha_inicio')
         fecha_fin = current_request.POST.get('fecha_fin')
+        
+        # Capturamos todos los posibles IDs del HTML
+        luminaria_id = current_request.POST.get('luminaria_id')
+        zona_id = current_request.POST.get('zona_id')
+        red_id = current_request.POST.get('red_id')
 
-        # Filtrar los registros en la base de datos por el rango de fechas seleccionado
+        # Siempre filtramos primero por las fechas
         registros_filtrados = registros.filter(fecha_registro__range=[fecha_inicio, fecha_fin])
+        
+        # Filtros dinámicos con la ruta exacta de la base de datos
+        if tipo_nivel == 'luminaria' and luminaria_id:
+            registros_filtrados = registros_filtrados.filter(luminaria__id_luminaria=luminaria_id)
+            titulo_reporte = f"REPORTE DE LUMINARIA ESPECÍFICA (ID: #{Luminaria.objects.get(id_luminaria=luminaria_id).id_luminaria})"
+            
+        elif tipo_nivel == 'red' and red_id:
+            # Busca los consumos de las luminarias conectadas a esta red específica
+            registros_filtrados = registros_filtrados.filter(luminaria__red__id_red=red_id)
+            red_obj = Red.objects.get(id_red=red_id)
+            titulo_reporte = f"REPORTE DE RED ELÉCTRICA ({red_obj.nombre.upper()})"
+            
+        elif tipo_nivel == 'zona' and zona_id:
+            # Busca los consumos saltando de luminaria -> red -> zona
+            registros_filtrados = registros_filtrados.filter(luminaria__red__zona__id_zona=zona_id)
+            zona_obj = Zona.objects.get(id_zona=zona_id)
+            titulo_reporte = f"REPORTE DE ZONA ({zona_obj.nombre.upper()})"
+            
+        else:
+            # Municipio general
+            titulo_reporte = "REPORTE DE CONSUMO ENERGÉTICO MUNICIPAL (GENERAL)"
 
-        # Cálculos matemáticos para los totales del reporte
+        # Cálculos matemáticos
         total_kwh = sum(r.consumo_kwh for r in registros_filtrados)
         total_costo = sum(r.costo for r in registros_filtrados)
         total_luminarias = registros_filtrados.values('luminaria').distinct().count()
@@ -197,37 +223,32 @@ def generar_reporte_consumo(current_request):
         # --- ARQUITECTURA DEL REPORTE PDF ---
         buffer = io.BytesIO()
         doc = SimpleDocTemplate(
-            buffer, 
-            pagesize=letter,
+            buffer, pagesize=letter,
             rightMargin=40, leftMargin=40, topMargin=40, bottomMargin=40
         )
         story = []
         styles = getSampleStyleSheet()
 
-        # Estilos personalizados para la Alcaldía
         titulo_style = ParagraphStyle(
-            'TituloReporte',
-            parent=styles['Heading1'],
+            'TituloReporte', parent=styles['Heading1'],
             fontSize=22, leading=26, textColor=colors.HexColor('#1e293b'), alignment=1, spaceAfter=10
         )
         sub_style = ParagraphStyle(
-            'SubTituloReporte',
-            parent=styles['Normal'],
+            'SubTituloReporte', parent=styles['Normal'],
             fontSize=10, leading=14, textColor=colors.HexColor('#64748b'), alignment=1, spaceAfter=20
         )
         meta_style = ParagraphStyle(
-            'MetaReporte',
-            parent=styles['Normal'],
+            'MetaReporte', parent=styles['Normal'],
             fontSize=11, leading=16, textColor=colors.HexColor('#334155')
         )
 
-        # Encabezado del PDF
+        # Encabezado
         story.append(Paragraph("SISTEMA ALCA-LUZ", titulo_style))
-        story.append(Paragraph(f"REPORTE DE CONSUMO ENERGÉTICO MUNICIPAL ({tipo_nivel.upper()})", ParagraphStyle('Sub', parent=titulo_style, fontSize=13, textColor=colors.HexColor('#2563eb'))))
+        story.append(Paragraph(titulo_reporte, ParagraphStyle('Sub', parent=titulo_style, fontSize=13, textColor=colors.HexColor('#2563eb'))))
         story.append(Paragraph(f"Período auditado: del {fecha_inicio} al {fecha_fin}", sub_style))
         story.append(Spacer(1, 10))
 
-        # Cuadro de Resumen Técnico
+        # Resumen
         resumen_data = [
             [Paragraph("<b>Métrica General</b>", meta_style), Paragraph("<b>Valor Calculado</b>", meta_style)],
             ["Luminarias Auditadas:", f"{total_luminarias} unidades"],
@@ -247,9 +268,8 @@ def generar_reporte_consumo(current_request):
         story.append(tabla_resumen)
         story.append(Spacer(1, 20))
 
-        # Tabla del desglose detallado
+        # Tabla Detalles
         story.append(Paragraph("<b>2. Desglose Detallado de Registros</b>", ParagraphStyle('H2', parent=styles['Heading2'], fontSize=14, spaceAfter=8)))
-        
         tabla_data = [["Luminaria ID", "Red Eléctrica", "Zona", "Consumo (kWh)", "Costo (USD)"]]
         for r in registros_filtrados:
             tabla_data.append([
@@ -272,12 +292,12 @@ def generar_reporte_consumo(current_request):
         ]))
         story.append(tabla_detalles)
 
-        # Construir y retornar el archivo PDF listo para descarga
+        # Retornar PDF
         doc.build(story)
         buffer.seek(0)
-        return FileResponse(buffer, as_attachment=True, filename=f"Reporte_Consumo_{tipo_nivel}_{fecha_inicio}.pdf")
+        return FileResponse(buffer, as_attachment=True, filename=f"Reporte_ALCA_LUZ_{tipo_nivel}.pdf")
 
-    # 3. Respuesta en caso de ser una petición GET normal (Cargar la página web limpia)
+    # 3. Petición GET
     context = {
         'zonas': zonas,
         'redes': redes,
