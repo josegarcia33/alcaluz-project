@@ -11,15 +11,10 @@ from decimal import Decimal
 from datetime import datetime
 #para lo de la pagina cero o página principal del app
 def landing_page(current_request):
-    if current_request.user.is_authenticated:
-        return redirect('usuario:redirect_by_role')
     return render(current_request, 'landing.html')
 
 
 def login_view(current_request):
-    if current_request.user.is_authenticated:
-        return redirect('usuario:redirect_by_role')
-        
     error_message = None
     if current_request.method == 'POST':
         form = LoginForm(current_request.POST)
@@ -97,10 +92,10 @@ def registrar_zona(current_request):
     else:
         form = ZonaForm()
         
-    return render(current_request, 'municipal/registrar_zona.html', {
-        'form': form, 
-        'zonas': zonas
-    })
+    return render(current_request, 'municipal/registrar_zona.html', {'form': form, 'zonas': zonas})
+       
+        
+    
 
 
 @login_required(login_url='usuario:login')

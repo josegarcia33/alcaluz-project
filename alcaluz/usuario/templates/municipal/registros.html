@@ -177,7 +177,7 @@
           </div>
         {% endif %}
 
-        <form class="form-grid" method="post" action="{% url 'usuario:registrar_luminaria' %}">
+        <form class="form-grid" method="post" action="{% url 'usuario:registrar_zona' %}">
           {% csrf_token %}
           <div class="form-group">
             <label>Nombre de la Zona / Sector *</label>
@@ -262,7 +262,7 @@
           </div>
         {% endif %}
 
-        <form class="form-grid" method="post" action="{% url 'usuario:registrar_luminaria' %}">
+        <form class="form-grid" method="post" action="{% url 'usuario:registrar_red' %}">
           {% csrf_token %}
           <div class="form-group">
             <label>Nombre de la Red *</label>
@@ -388,12 +388,6 @@
     </div>
     <!--════════════════════════ FIN REGISTRO DE LUMINARIA ══════════════════════ -->
     
-
-
-
-
-
-
 
         <!--════════════════════════════ INICIO CONSUMOS ════════════════════════════ -->
     <div class="page" id="page-consumo">

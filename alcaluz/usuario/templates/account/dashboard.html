@@ -15,7 +15,7 @@
                 {% if rol == 'Administrador' %}
                     <div class="alert alert-info d-inline-block">🛡️ Tienes permisos de <strong>Administrador</strong>. Puedes gestionar Reportes.</div>
                     <hr>
-                        <a class="btn btn-primary" href="{% url 'usuario:generar_reporte_consumo' %}"> Ingresar a reportes</a>              
+                        <a class="btn btn-success" href="{% url 'usuario:generar_reporte_consumo' %}"> Ingresar a reportes</a>              
                         <a class="btn btn-primary" href="{% url 'usuario:registrar_consumo' %}">Ingresar  registros  </a>
 
                 {% elif rol == 'Técnico' %}
