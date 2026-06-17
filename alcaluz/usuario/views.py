@@ -377,7 +377,7 @@ def registrar_consumo(request):
         if fecha_inicio >= fecha_fin:
             contexto = datos_formulario()
             contexto['pagina_activa'] = 'reg-consumo'
-            contexto['error_consumo'] = 'La fecha de inicio debe ser anterior a la fecha de fin.'
+            messages.error(request, "La fecha de inicio debe ser anterior a la fecha de fin.")
             return render(request, 'municipal/registros.html', contexto)
 
         consumo_kwh = Decimal(consumo)
