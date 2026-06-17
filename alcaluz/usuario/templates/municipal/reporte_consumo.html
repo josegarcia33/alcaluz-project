@@ -108,7 +108,7 @@
     
 </div>
 
-<!-- NUEVO: Script para mostrar u ocultar el menú de luminarias -->
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const nivelSelect = document.querySelector('select[name="tipo_nivel"]');
@@ -139,9 +139,9 @@
         }
 
         nivelSelect.addEventListener('change', function() {
-            resetSelectors(); // Primero limpiamos la pantalla
+            resetSelectors(); 
 
-            // Luego mostramos solo el que necesitamos
+            
             if (this.value === 'luminaria') {
                 luminariaDiv.style.display = 'block';
                 luminariaInput.required = true;

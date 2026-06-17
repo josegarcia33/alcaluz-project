@@ -172,7 +172,7 @@ from reportlab.lib import colors
 @login_required(login_url='usuario:login')
 @user_passes_test(es_administrador, login_url='usuario:login')
 def generar_reporte_consumo(current_request):
-    # 1. Datos para los filtros de la interfaz visual
+    # Datos para los filtros de la interfaz visual
     zonas = Zona.objects.all()
     redes = Red.objects.all()
     luminarias = Luminaria.objects.all()
@@ -180,39 +180,39 @@ def generar_reporte_consumo(current_request):
     # Filtro por defecto
     registros = RegistroConsumo.objects.select_related('luminaria__red__zona').all().order_by('-fecha_registro')
 
-    # 2. Si el usuario presiona el botón azul "Generar y Descargar" (Petición POST)
+    # Si el usuario presiona el botón azul "Generar y Descargar" (Petición POST)
     if current_request.method == 'POST':
         tipo_nivel = current_request.POST.get('tipo_nivel', '') 
         fecha_inicio = current_request.POST.get('fecha_inicio')
         fecha_fin = current_request.POST.get('fecha_fin')
         
-        # Capturamos todos los posibles IDs del HTML
+        
         luminaria_id = current_request.POST.get('luminaria_id')
         zona_id = current_request.POST.get('zona_id')
         red_id = current_request.POST.get('red_id')
 
-        # Siempre filtramos primero por las fechas
+        
         registros_filtrados = registros.filter(fecha_registro__range=[fecha_inicio, fecha_fin])
         
-        # Filtros dinámicos con la ruta exacta de la base de datos
+        
         if tipo_nivel == 'luminaria' and luminaria_id:
             registros_filtrados = registros_filtrados.filter(luminaria__id_luminaria=luminaria_id)
             titulo_reporte = f"REPORTE DE LUMINARIA ESPECÍFICA (ID: #{Luminaria.objects.get(id_luminaria=luminaria_id).id_luminaria})"
             
         elif tipo_nivel == 'red' and red_id:
-            # Busca los consumos de las luminarias conectadas a esta red específica
+            
             registros_filtrados = registros_filtrados.filter(luminaria__red__id_red=red_id)
             red_obj = Red.objects.get(id_red=red_id)
             titulo_reporte = f"REPORTE DE RED ELÉCTRICA ({red_obj.nombre.upper()})"
             
         elif tipo_nivel == 'zona' and zona_id:
-            # Busca los consumos saltando de luminaria -> red -> zona
+            
             registros_filtrados = registros_filtrados.filter(luminaria__red__zona__id_zona=zona_id)
             zona_obj = Zona.objects.get(id_zona=zona_id)
             titulo_reporte = f"REPORTE DE ZONA ({zona_obj.nombre.upper()})"
             
         else:
-            # Municipio general
+            
             titulo_reporte = "REPORTE DE CONSUMO ENERGÉTICO MUNICIPAL (GENERAL)"
 
         # Cálculos matemáticos
@@ -297,7 +297,7 @@ def generar_reporte_consumo(current_request):
         buffer.seek(0)
         return FileResponse(buffer, as_attachment=True, filename=f"Reporte_ALCA_LUZ_{tipo_nivel}.pdf")
 
-    # 3. Petición GET
+    # Petición GET
     context = {
         'zonas': zonas,
         'redes': redes,
