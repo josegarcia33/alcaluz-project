@@ -82,7 +82,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'alcaluzdb',
         'USER': 'postgres',
-        'PASSWORD': 'mm24067',
+        'PASSWORD': 'root',
         'HOST': 'localhost',
         'PORT': '5432',
     }
