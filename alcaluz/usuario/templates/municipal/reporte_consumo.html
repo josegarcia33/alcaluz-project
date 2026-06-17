@@ -27,7 +27,7 @@
                     <select name="luminaria_id" id="luminaria_select" class="form-select">
                         <option value="" disabled selected>Seleccione una luminaria...</option>
                         {% for luminaria in luminarias %}
-                            <option value="{{ luminaria.id_luminaria }}">Luminaria #{{ luminaria.id_luminaria }}</option>
+                            <option value="{{ luminaria.id_luminaria }}">{{ luminaria.id_luminaria }} - {{ luminaria.ubicacion }}</option>
                         {% endfor %}
                     </select>
                 </div>
