@@ -21,5 +21,6 @@ urlpatterns = [
     path('reportes/consumo/', views.generar_reporte_consumo, name='generar_reporte_consumo'),
     path('registrar_luminYconsumo/', views.registrar_luminaria, name='registrar_luminaria'),
     path('registrar_consumo/', views.registrar_consumo, name='registrar_consumo'),
+    path('landing/', views.landing_page, name='landing'),
     path('', views.inicio, name='inicio'),
 ]
