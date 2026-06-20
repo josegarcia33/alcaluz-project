@@ -34,6 +34,7 @@ def login_view(current_request):
         form = LoginForm()
         
     return render(current_request, 'registration/login.html', {'form': form, 'error_message': error_message})
+
 # para técnicos es una pantalla, para un amin es otra
 @login_required
 def redirect_by_role(current_request):

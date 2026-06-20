@@ -10,10 +10,12 @@
     <div class="card login-card shadow-lg text-center">
         <h2 class="login-title">Iniciar Sesión</h2>
         
-        {% if form.errors %}
-            <div class="alert alert-danger py-2 small border-0 text-white bg-danger bg-opacity-75 rounded-3 mb-4" role="alert">
-                Usuario o contraseña incorrectos.
-            </div>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-danger py-2 small border-0 text-white bg-danger bg-opacity-75 rounded-3 mb-4 text-start" role="alert">
+                    ⚠️ {{ message }}
+                </div>
+            {% endfor %}
         {% endif %}
 
         <form method="post" class="text-start">
@@ -21,7 +23,7 @@
             
             <div class="mb-3">
                 <label for="id_username" class="form-label form-label-custom">Nombre de usuario:</label>
-                <input type="text" name="username" id="id_username" class="form-control form-control-custom" placeholder="usuario" required>
+                <input type="text" name="username" id="id_username" class="form-control form-control-custom" placeholder="usuario" value="{{ form.username.value|default:'' }}" required>
             </div>
             
             <div class="mb-4">
