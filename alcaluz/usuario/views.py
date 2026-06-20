@@ -11,10 +11,13 @@ from decimal import Decimal
 from datetime import datetime
 #para lo de la pagina cero o página principal del app
 def landing_page(current_request):
+
     return render(current_request, 'landing.html')
 
 
 def login_view(current_request):
+ 
+        
     error_message = None
     if current_request.method == 'POST':
         form = LoginForm(current_request.POST)
