@@ -85,8 +85,11 @@
                 gap: 10px;
               ">
                 {% for message in messages %}
-                  <div class="toast-msg toast-{{ message.tags }}" style="
-                    background: #1bb476;
+                      
+                  <div class="toast-msg toast-{{ message.tags }}" 
+                    {% if message.tags == 'error' %}
+                  style="
+                    background: #fd4800;
                     color: #fff;
                     padding: 14px 20px;
                     border-radius: 10px;
@@ -98,7 +101,23 @@
                     gap: 10px;
                     min-width: 280px;
                     animation: slideIn 0.3s ease;
-                  ">
+                  " {% elif message.tags == 'success' %}
+                  style="
+                    background: #02ca0c;
+                    color: #fff;
+                    padding: 14px 20px;
+                    border-radius: 10px;
+                    font-size: 14px;
+                    font-weight: 600;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    min-width: 280px;
+                    animation: slideIn 0.3s ease;
+                  "
+                  {% endif %}
+                  >
                     {{ message }}
                   </div>
                 {% endfor %}
@@ -448,11 +467,7 @@
           ＋ Registrar consumo
         </button>
       </div>
-      <!--<div class="filter-bar">
-        <select class="form-control">
-          <option>Todas las zonas</option>
-        </select> 
-      </div>-->
+     
 
       <div class="TablaPrincipal">
         <div class="tbl-wrap">

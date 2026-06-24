@@ -372,7 +372,7 @@ def registrar_consumo(request):
 
         if not luminaria or not consumo or not periodo_inicio or not periodo_fin or not tecnico:
             contexto = datos_formulario()
-            contexto['error_consumo'] = 'Debe completar todos los campos del registro de consumo.'
+            messages.error(request, "Todos los campos son obligatorios.")
             return render(request, 'municipal/registros.html', contexto)
 
         fecha_inicio = datetime.strptime(periodo_inicio, '%Y-%m-%d').date()
@@ -383,6 +383,7 @@ def registrar_consumo(request):
             contexto['pagina_activa'] = 'reg-consumo'
             messages.error(request, "La fecha de inicio debe ser anterior a la fecha de fin.")
             return render(request, 'municipal/registros.html', contexto)
+            
 
         consumo_kwh = Decimal(consumo)
         costo = consumo_kwh * Decimal('0.10')
