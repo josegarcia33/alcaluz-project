@@ -346,6 +346,24 @@ def registrar_luminaria(request):
                 return render(request, 'municipal/registros.html', contexto)
         # Registro de luminaria
         if 'potencia' in request.POST and 'red' in request.POST:
+            try:
+                potencia = Decimal(request.POST['potencia'])
+            except Exception:
+                contexto = datos_formulario()
+                contexto['form'] = ZonaForm()
+                contexto['form_red'] = RedForm()
+                contexto['pagina_activa'] = 'reg-lum'
+                messages.error(request, "La potencia debe ser un número válido.")
+                return render(request, 'municipal/registros.html', contexto)
+
+            if potencia < 0:
+                contexto = datos_formulario()
+                contexto['form'] = ZonaForm()
+                contexto['form_red'] = RedForm()
+                contexto['pagina_activa'] = 'reg-lum'
+                messages.error(request, "La potencia no puede ser negativa.")
+                return render(request, 'municipal/registros.html', contexto)
+
             Luminaria.objects.create(
                 potencia = request.POST['potencia'],
                 ubicacion = request.POST['ubicacion'],
